@@ -32,6 +32,11 @@ header 'Welcome to salesforce-dx-buildpack!'
 update "Exporting environment directories ..."
 export_env "$ENV_DIR"
 update "Setting up CLI paths ..."
+
+echo "BUILD_DIR" $BUILD_DIR
+echo "CACHE_DIR" $CACHE_DIR
+echo "ENV_DIR" $ENV_DIR
+
 setup_dirs "$BUILD_DIR"
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
