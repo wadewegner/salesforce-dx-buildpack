@@ -45,8 +45,9 @@ update "-- ENV_DIR" $ENV_DIR
 
 setup_dirs "$BUILD_DIR"
 
-update "Run CLI"
-sfdx update
+update "Update CLI ..."
+sfdx update &>/dev/null
+update "-- Completed 'sfdx update'"
 sfdx version
 sfdx plugins --core
 
