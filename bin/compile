@@ -44,5 +44,11 @@ update "-- CACHE_DIR" $CACHE_DIR
 update "-- ENV_DIR" $ENV_DIR
 
 setup_dirs "$BUILD_DIR"
+
+update "Run CLI"
+sfdx update
+sfdx version
+sfdx plugins --core
+
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
