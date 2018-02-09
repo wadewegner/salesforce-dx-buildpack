@@ -1,0 +1,16 @@
+{
+  "name": "salesforce-dx-buildback",
+  "version": "0.0.1",
+  "description": "Buildpack for Salesforce DX",
+  "repository": "https://github.com/wadewegner/salesforce-dx-buildback",
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+      "url": "https://github.com/wadewegner/salesforce-dx-buildback/issues"
+  },
+  "homepage": "https://github.com/wadewegner/salesforce-dx-buildback#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
