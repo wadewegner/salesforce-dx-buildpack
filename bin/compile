@@ -46,6 +46,7 @@ update "-- DEV_HUB_CLIENT_ID: $DEV_HUB_CLIENT_ID"
 update "-- DEV_HUB_USERNAME: $DEV_HUB_USERNAME"
 update "-- DEV_HUB_CERT_KEY: $DEV_HUB_CERT_KEY"
 update "-- STAGE: $STAGE"
+update "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 
 # Create cert.key
 DEV_HUB_CERT_KEY_PATH="$BUILD_DIR/certs"
