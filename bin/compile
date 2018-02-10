@@ -69,8 +69,11 @@ sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfil
 # Create scratch org
 sfdx force:org:create -s -f $SCRATCH_CONFIG_FILE
 
+# Push source
+sfdx force:source:push
+
 # Run tests
-sfdx force:apex:test:run -r human
+sfdx force:apex:test:run -r tap
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
