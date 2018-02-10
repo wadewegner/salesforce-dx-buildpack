@@ -65,15 +65,15 @@ cd $BUILD_DIR
 # Parse .salesforcedx.yml file
 eval $(parse_yaml .salesforcedx.yml "sfdx_")
 
-update ".salesforcex.yml values ..."
+update ".salesforcex.yml values t..."
 
-update "-- scratch-org-def: $sfdx_scratch-org-def"
-update "-- assign-permset: $sfdx_assign-permset"
-update "-- permset-name: $sfdx_permset-name"
-update "-- run-apex-tests: $run-apex-tests"
-update "-- apex-test-format: $sfdx_apex-test-format"
-update "-- delete-scratch-org: $sfdx_delete-scratch-org"
-update "-- show-scratch-org-url: $sfdx_show-scratch-org-url"
+update "-- scratch-org-def: $sfdx_scratch_org_def"
+update "-- assign-permset: $sfdx_assign_permset"
+update "-- permset-name: $sfdx_permset_name"
+update "-- run-apex-tests: $sfdx_run_apex_tests"
+update "-- apex-test-format: $sfdx_apex_test_format"
+update "-- delete-scratch-org: $sfdx_delete_scratch_org"
+update "-- show-scratch-org-url: $sfdx_show_scratch_org_url"
 
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
