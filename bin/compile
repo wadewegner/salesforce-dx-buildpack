@@ -88,7 +88,7 @@ if [ "$STAGE" == "STAGING" ]; then
 
   sfdx force:source:convert -d mdapiout
 
-  sfdx force:mdapi:deploy-d mdapiout --wait 1000 -u targetorg
+  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
   # Run tests
   if [ "$run_apex_tests" == "true" ]; then
@@ -102,7 +102,7 @@ if [ "$STAGE" == "PROD" ]; then
 
   sfdx force:source:convert -d mdapiout
 
-  sfdx force:mdapi:deploy-d mdapiout --wait 1000 -u targetorg
+  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
   # Run tests
   if [ "$run_apex_tests" == "true" ]; then
