@@ -102,8 +102,14 @@ if [ "$STAGE" == "" ]; then
   sfdx force:source:push
 
   # Run tests
-  #TODO: check yml value
-  sfdx force:apex:test:run -r tap
+  if [ "$run_apex_tests" == "true" ]; then
+    sfdx force:apex:test:run -r $apex_test_format
+  fi
+
+  # Run tests
+  if [ "$delete_scratch_org" == "true" ]; then
+    sfdx force:org:delete -p
+  fi
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
