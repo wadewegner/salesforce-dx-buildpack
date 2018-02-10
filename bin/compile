@@ -76,7 +76,8 @@ update "-- permset-name: $permset_name"
 update "-- run-apex-tests: $run_apex_tests"
 update "-- apex-test-format: $apex_test_format"
 update "-- delete-scratch-org: $delete_scratch_org"
-update "-- show-scratch-org-url: $show_scratch_org_url"
+update "-- open-path: $sfdx_open_path"
+update "-- data-plans: $sfdx_data_plans"
 
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
@@ -87,7 +88,9 @@ sfdx force:org:create -s -f $scratch_org_def
 # Push source
 sfdx force:source:push
 
-# Run tests
+ Run tests
+
+#TODO: check yml value
 sfdx force:apex:test:run -r tap
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
