@@ -70,7 +70,8 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-ls -lR $BUILD_DIR
+update "-- ENV_DIR"
+ls -lR $ENV_DIR 
 
 echo "CLIENT_ID: $CLIENT_ID"
 
