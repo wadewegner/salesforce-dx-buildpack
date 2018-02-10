@@ -46,6 +46,9 @@ update "-- DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
 update "-- STAGE: $STAGE"
 update "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 
+whoami=$(whoami)
+update "-- WHOAMI: $whoami"
+
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
@@ -118,7 +121,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   update "Creating Profile ..."
   echo "# Deploy source to production org.
-release: pwd
+release: pwd && ls -lR && whoami
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
