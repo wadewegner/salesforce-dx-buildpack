@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source common.sh
+source sfdx.sh
 source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
 
 header "Running release.sh"
@@ -15,6 +16,13 @@ log "-- WHOAMI: $whoami"
 
 # if [ "$STAGE" == "PROD" ]; then
 
-sfdx version
+auth $SFDX_AUTH_URL s targetorg
+
+sfdx force:source:convert -d mdapiout
+
+sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
+
+# Run tests
+tests $run_apex_tests $apex_test_format
 
 # fi

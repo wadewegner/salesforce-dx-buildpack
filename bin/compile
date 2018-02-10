@@ -74,16 +74,13 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
   
   auth $SFDX_AUTH_URL s targetorg
 
-  sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s -a targetorg
-
   sfdx force:source:convert -d mdapiout
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
   # Run tests
-  if [ "$run_apex_tests" == "true" ]; then
-    sfdx force:apex:test:run -r $apex_test_format -u targetorg
-  fi
+  tests $run_apex_tests $apex_test_format
+
 fi
 
 ###  Review app
@@ -101,11 +98,9 @@ if [ "$STAGE" == "" ]; then
   sfdx force:source:push
 
   # Run tests
-  if [ "$run_apex_tests" == "true" ]; then
-    sfdx force:apex:test:run -r $apex_test_format
-  fi
+  tests $run_apex_tests $apex_test_format
 
-  # Run tests
+  # Delete scratch org
   if [ "$delete_scratch_org" == "true" ]; then
     sfdx force:org:delete -p
   fi
@@ -120,7 +115,7 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
 release: ./release.sh
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
-web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
+# web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
 
   update "-- Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
@@ -131,6 +126,8 @@ update "Copying release.sh to BUILD_DIR/release.sh ..."
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
 update "Copying common.sh to BUILD_DIR/common.sh ..."
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
+update "Copying sfdx.sh to BUILD_DIR/sfdx.sh ..."
+cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
