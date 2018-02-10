@@ -64,7 +64,7 @@ cd $BUILD_DIR
 
 update "Parse .salesforcex.yml values ..."
 
-# Parse .salesforcedx.yml file into env vars
+# Parse .salesforcedx.yml file into env
 eval $(parse_yaml .salesforcedx.yml "sfdx_")
 
 update "-- scratch-org-def: $scratch_org_def"
@@ -85,8 +85,7 @@ sfdx force:org:create -s -f $scratch_org_def
 # Push source
 sfdx force:source:push
 
- Run tests
-
+# Run tests
 #TODO: check yml value
 sfdx force:apex:test:run -r tap
 
