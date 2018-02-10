@@ -60,6 +60,9 @@ CERT_KEY_FILE="$CERT_KEY_PATH/cert.key"
 update "-- CERT_KEY_FILE: $CERT_KEY_FILE"
 echo "$CERT_KEY" > "$CERT_KEY_FILE"
 
+# Go to BUILD_DIR
+cd $BUILD_DIR
+
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
 
