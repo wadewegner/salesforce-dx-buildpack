@@ -57,7 +57,10 @@ update "-- USERNAME: $USERNAME"
 update "-- CERT_KEY: $CERT_KEY"
 
 CERT_KEY_PATH="$CACHE_DIR/certs"
-mkdir CERT_KEY_PATH
+mkdir $CERT_KEY_PATH
+
+ls -lR $CERT_KEY_PATH
+
 CERT_KEY_FILE="$CERT_KEY_PATH/cert.key"
 update "-- CERT_KEY_FILE: $CERT_KEY_FILE"
 
