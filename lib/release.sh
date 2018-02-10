@@ -17,3 +17,12 @@ log "BUILD_DIR $BUILD_DIR"
 log "CACHE_DIR $CACHE_DIR"
 log "ENV_DIR $ENV_DIR"
 log "BP_DIR $BP_DIR"
+
+
+log "Config vars ..."
+log "-- DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
+log "-- STAGE: $STAGE"
+log "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
+
+whoami=$(whoami)
+log "-- WHOAMI: $whoami"
