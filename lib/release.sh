@@ -16,7 +16,7 @@ log "-- WHOAMI: $whoami"
 
 # if [ "$STAGE" == "PROD" ]; then
 
-auth $SFDX_AUTH_URL s targetorg
+auth . $SFDX_AUTH_URL s targetorg
 
 sfdx force:source:convert -d mdapiout
 
