@@ -9,6 +9,7 @@ set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
 ### Configure directories
+CLI_PATH="/tmp/cli"
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
@@ -16,6 +17,8 @@ BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
 ### Load additional functions
 source $BP_DIR/lib/common.sh
+
+source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
 
 ### Setup functions
 setup_dirs() {
@@ -25,14 +28,19 @@ setup_dirs() {
 
 ### Execute
 header 'Welcome to salesforce-dx-buildpack!'
+update "Exporting environment directories ..."
+export_env "$ENV_DIR"
 
-update "Exporting env dir to vars ..."
-export_env_dir
+# update "Exporting env dir to vars ..."
+
+# export_env_dir
 
 update "Setting up paths ..."
+
 update "-- BUILD_DIR" $BUILD_DIR
 update "-- CACHE_DIR" $CACHE_DIR
 update "-- ENV_DIR" $ENV_DIR
+
 setup_dirs "$BUILD_DIR"
 
 update "Updating CLI ..."
@@ -43,10 +51,10 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-update "Checking env vars ..."
 update "-- ENV_DIR"
 ls -lR $ENV_DIR 
-update "-- CLIENT_ID: $CLIENT_ID"
+
+echo "CLIENT_ID: $CLIENT_ID"
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
