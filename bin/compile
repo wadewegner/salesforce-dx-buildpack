@@ -51,10 +51,13 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-update "-- ENV_DIR"
-ls -lR $ENV_DIR 
+update "Config vars ..."
+update "-- CLIENT_ID: $CLIENT_ID"
+update "-- USERNAME: $USERNAME"
+update "-- CERT_KEY: $CERT_KEY"
+update "-- INSTANCE_URL: $INSTANCE_URL"
 
-echo "CLIENT_ID: $CLIENT_ID"
+# sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_PATH --setdefaultdevhubusername
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
