@@ -121,7 +121,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   update "Creating Profile ..."
   echo "# Deploy source to production org.
-release: pwd && ls -lR && whoami
+release: release.sh
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
@@ -132,7 +132,6 @@ fi
 # copy release.sh
 
 update "Copying release.sh to BUILD_DIR/.release ..."
-mkdir -p .release
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
