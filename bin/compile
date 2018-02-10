@@ -17,6 +17,7 @@ BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
 ### Load additional functions
 source $BP_DIR/lib/common.sh
+source $BP_DIR/lib/sfdx.sh
 source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
 
 ### Execute
@@ -71,8 +72,7 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   update "Running on $STAGE ..."
   
-  SFDX_AUTH_URL_FILE="$BUILD_DIR/sfdxurl"
-  echo "$SFDX_AUTH_URL" > $SFDX_AUTH_URL_FILE
+  auth $SFDX_AUTH_URL s targetorg
 
   sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s -a targetorg
 
