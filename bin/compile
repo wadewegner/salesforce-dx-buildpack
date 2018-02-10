@@ -45,11 +45,13 @@ update "-- ENV_DIR" $ENV_DIR
 
 setup_dirs "$BUILD_DIR"
 
-update "Update CLI ..."
+update "Updating CLI ..."
 sfdx update &>/dev/null
 update "-- Completed 'sfdx update'"
-sfdx version
-sfdx plugins --core
+SFDX_VERSION=$(sfdx version)
+update "-- " $SFDX_VERSION
+SFDX_PLUGINS=$(sfdx plugins --core)
+update "-- " $SFDX_PLUGINS
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
