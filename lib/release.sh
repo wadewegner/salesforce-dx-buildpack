@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 source common.sh
 source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
