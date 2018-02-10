@@ -14,15 +14,15 @@ log "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 whoami=$(whoami)
 log "-- WHOAMI: $whoami"
 
-# if [ "$STAGE" == "PROD" ]; then
+if [ "$STAGE" == "PROD" ]; then
 
-auth . $SFDX_AUTH_URL s targetorg
+  auth . $SFDX_AUTH_URL s targetorg
 
-sfdx force:source:convert -d mdapiout
+  sfdx force:source:convert -d mdapiout
 
-sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
+  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
-# Run tests
-tests $run_apex_tests $apex_test_format
+  # Run tests
+  tests $run_apex_tests $apex_test_format targetorg
 
-# fi
+fi

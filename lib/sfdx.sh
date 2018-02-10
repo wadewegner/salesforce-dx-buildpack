@@ -7,11 +7,11 @@ auth() {
 
 }
 
-# <run_apex_tests> <apex_test_format>
+# <run_apex_tests> <apex_test_format> <alias>
 tests() {
 
   if [ "$1" == "true" ]; then
-    sfdx force:apex:test:run -r $2 -u targetorg
+    sfdx force:apex:test:run -r $2 -u $3
   fi
 
 }

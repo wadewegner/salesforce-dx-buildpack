@@ -79,7 +79,7 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
   # Run tests
-  tests $run_apex_tests $apex_test_format
+  tests $run_apex_tests $apex_test_format targetorg
 
 fi
 
@@ -89,16 +89,16 @@ if [ "$STAGE" == "" ]; then
   update "Running as a REVIEW APP ..."
 
   # Authenticate to Dev Hub
-  auth $BUILD_DIR $DEV_HUB_SFDX_AUTH_URL d targetorg
+  auth $BUILD_DIR $DEV_HUB_SFDX_AUTH_URL d huborg
 
   # Create scratch org
-  sfdx force:org:create -s -f $scratch_org_def
+  sfdx force:org:create -s -f $scratch_org_def -a targetorg
 
   # Push source
-  sfdx force:source:push
+  sfdx force:source:push -u targetorg
 
   # Run tests
-  tests $run_apex_tests $apex_test_format
+  tests $run_apex_tests $apex_test_format targetorg
 
   # Delete scratch org
   if [ "$delete_scratch_org" == "true" ]; then
