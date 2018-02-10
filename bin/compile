@@ -62,10 +62,10 @@ echo "$DEV_HUB_CERT_KEY" > "$DEV_HUB_CERT_KEY_FILE"
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
+update "Parse .salesforcex.yml values ..."
+
 # Parse .salesforcedx.yml file
 eval $(parse_yaml .salesforcedx.yml "sfdx_")
-
-update ".salesforcex.yml values t..."
 
 update "-- scratch-org-def: $sfdx_scratch_org_def"
 update "-- assign-permset: $sfdx_assign_permset"
@@ -79,7 +79,7 @@ update "-- show-scratch-org-url: $sfdx_show_scratch_org_url"
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
 
 # Create scratch org
-sfdx force:org:create -s -f $sfdx_scratch-org-def
+sfdx force:org:create -s -f $sfdx_scratch_org_def
 
 # Push source
 sfdx force:source:push
