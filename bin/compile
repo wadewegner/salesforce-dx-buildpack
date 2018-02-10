@@ -59,6 +59,9 @@ DEV_HUB_CERT_KEY_FILE="$DEV_HUB_CERT_KEY_PATH/cert.key"
 update "-- DEV_HUB_CERT_KEY_FILE: $DEV_HUB_CERT_KEY_FILE"
 echo "$DEV_HUB_CERT_KEY" > "$DEV_HUB_CERT_KEY_FILE"
 
+# Go to BUILD_DIR
+cd $BUILD_DIR
+
 # Parse .salesforcedx.yml file
 eval $(parse_yaml .salesforcedx.yml "sfdx_")
 
@@ -71,9 +74,6 @@ update "-- run-apex-tests: $run-apex-tests"
 update "-- apex-test-format: $sfdx_apex-test-format"
 update "-- delete-scratch-org: $sfdx_delete-scratch-org"
 update "-- show-scratch-org-url: $sfdx_show-scratch-org-url"
-
-# Go to BUILD_DIR
-cd $BUILD_DIR
 
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
