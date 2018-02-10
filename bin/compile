@@ -47,10 +47,11 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-# update "Config vars ..."
-# update "-- CLIENT_ID: $CLIENT_ID"
-# update "-- USERNAME: $USERNAME"
-# update "-- CERT_KEY: $CERT_KEY"
+update "Config vars ..."
+update "-- CLIENT_ID: $CLIENT_ID"
+update "-- USERNAME: $USERNAME"
+update "-- CERT_KEY: $CERT_KEY"
+update "-- SCRATCH_CONFIG_FILE: $SCRATCH_CONFIG_FILE"
 
 # Create cert.key
 CERT_KEY_PATH="certs"
@@ -62,7 +63,8 @@ echo "$CERT_KEY" > "$CERT_KEY_FILE"
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
 
-
+# Create scratch org
+sfdx force:org:create -s -f $SCRATCH_CONFIG_FILE
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
