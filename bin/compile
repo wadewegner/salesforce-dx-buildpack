@@ -50,21 +50,21 @@ update "-- Plugins: " $SFDX_PLUGINS
 update "Config vars ..."
 update "-- CLIENT_ID: $CLIENT_ID"
 update "-- DEV_HUB_USERNAME: $DEV_HUB_USERNAME"
-update "-- CERT_KEY: $CERT_KEY"
+update "-- DEV_HUB_CERT_KEY: $DEV_HUB_CERT_KEY"
 update "-- SCRATCH_CONFIG_FILE: $SCRATCH_CONFIG_FILE"
 
 # Create cert.key
-CERT_KEY_PATH="$BUILD_DIR/certs"
-mkdir $CERT_KEY_PATH
-CERT_KEY_FILE="$CERT_KEY_PATH/cert.key"
-update "-- CERT_KEY_FILE: $CERT_KEY_FILE"
-echo "$CERT_KEY" > "$CERT_KEY_FILE"
+DEV_HUB_CERT_KEY_PATH="$BUILD_DIR/certs"
+mkdir $DEV_HUB_CERT_KEY_PATH
+DEV_HUB_CERT_KEY_FILE="$DEV_HUB_CERT_KEY_PATH/cert.key"
+update "-- DEV_HUB_CERT_KEY_FILE: $DEV_HUB_CERT_KEY_FILE"
+echo "$DEV_HUB_CERT_KEY" > "$DEV_HUB_CERT_KEY_FILE"
 
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
 # Authenticate to Dev Hub
-sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
+sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
 
 # Create scratch org
 sfdx force:org:create -s -f $SCRATCH_CONFIG_FILE
