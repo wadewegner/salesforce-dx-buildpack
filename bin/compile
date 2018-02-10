@@ -49,9 +49,11 @@ update "Updating CLI ..."
 sfdx update &>/dev/null
 update "-- Completed 'sfdx update'"
 SFDX_VERSION=$(sfdx version)
-update "-- " $SFDX_VERSION
+update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
-update "-- " $SFDX_PLUGINS
+update "-- Plugins: " $SFDX_PLUGINS
+
+ls -lR $BUILD_DIR
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
