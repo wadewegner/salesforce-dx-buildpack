@@ -64,11 +64,8 @@ cd $BUILD_DIR
 
 update "Parse .salesforcex.yml values ..."
 
-# Parse .salesforcedx.yml file into a shell file
-awk '{ gsub("-", "_", $1) } 1' FS=':' OFS=':' .salesforcedx.yml |
-  sed -e 's/:[^:\/\/]/="/g;s/$/"/g;s/ *=/=/g' > salesforcedx.sh
-
-source salesforcedx.sh
+# Parse .salesforcedx.yml file into env vars
+eval $(parse_yaml .salesforcedx.yml "sfdx_")
 
 update "-- scratch-org-def: $scratch_org_def"
 update "-- assign-permset: $assign_permset"
