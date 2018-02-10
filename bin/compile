@@ -64,22 +64,25 @@ cd $BUILD_DIR
 
 update "Parse .salesforcex.yml values ..."
 
-# Parse .salesforcedx.yml file
-eval $(parse_yaml .salesforcedx.yml "sfdx_")
+# Parse .salesforcedx.yml file into a shell file
+awk '{ gsub("-", "_", $1) } 1' FS=':' OFS=':' .salesforcedx.yml |
+  sed -e 's/:[^:\/\/]/="/g;s/$/"/g;s/ *=/=/g' > salesforcedx.sh
 
-update "-- scratch-org-def: $sfdx_scratch_org_def"
-update "-- assign-permset: $sfdx_assign_permset"
-update "-- permset-name: $sfdx_permset_name"
-update "-- run-apex-tests: $sfdx_run_apex_tests"
-update "-- apex-test-format: $sfdx_apex_test_format"
-update "-- delete-scratch-org: $sfdx_delete_scratch_org"
-update "-- show-scratch-org-url: $sfdx_show_scratch_org_url"
+source salesforcedx.sh
+
+update "-- scratch-org-def: $scratch_org_def"
+update "-- assign-permset: $assign_permset"
+update "-- permset-name: $permset_name"
+update "-- run-apex-tests: $run_apex_tests"
+update "-- apex-test-format: $apex_test_format"
+update "-- delete-scratch-org: $delete_scratch_org"
+update "-- show-scratch-org-url: $show_scratch_org_url"
 
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
 
 # Create scratch org
-sfdx force:org:create -s -f $sfdx_scratch_org_def
+sfdx force:org:create -s -f $scratch_org_def
 
 # Push source
 sfdx force:source:push
