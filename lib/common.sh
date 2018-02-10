@@ -1,3 +1,8 @@
+setup_dirs() {
+  local DIR="$1"
+  export PATH="$DIR/.local/share/sfdx/cli/bin:$DIR/.sfdx/bin:$PATH"
+}
+
 export_env_dir() {
   whitelist_regex=${2:-$'^(SALESFORCE_|HEROKU_)'}
   blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
