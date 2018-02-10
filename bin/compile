@@ -79,17 +79,35 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
   SFDX_AUTH_URL_FILE="$BUILD_DIR/sfdxurl"
   echo "$SFDX_AUTH_URL" > $SFDX_AUTH_URL_FILE
 
-  sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s
+  sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s -a targetorg
 fi
 
 # Staging
-if [ "$STAGE" == "PROD" ]; then
+if [ "$STAGE" == "STAGING" ]; then
   update "Running on $STAGE ..."
+
+  sfdx force:source:convert -d mdapiout
+
+  sfdx force:mdapi:deploy-d mdapiout --wait 1000 -u targetorg
+
+  # Run tests
+  if [ "$run_apex_tests" == "true" ]; then
+    sfdx force:apex:test:run -r $apex_test_format -u targetorg
+  fi
 fi
 
 # Prod
 if [ "$STAGE" == "PROD" ]; then
   update "Running on $STAGE ..."
+
+  sfdx force:source:convert -d mdapiout
+
+  sfdx force:mdapi:deploy-d mdapiout --wait 1000 -u targetorg
+
+  # Run tests
+  if [ "$run_apex_tests" == "true" ]; then
+    sfdx force:apex:test:run -r $apex_test_format -u targetorg
+  fi
 fi
 
 # Review app
