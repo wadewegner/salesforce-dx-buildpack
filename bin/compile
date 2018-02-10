@@ -54,7 +54,7 @@ update "-- CERT_KEY: $CERT_KEY"
 update "-- SCRATCH_CONFIG_FILE: $SCRATCH_CONFIG_FILE"
 
 # Create cert.key
-CERT_KEY_PATH="certs"
+CERT_KEY_PATH="$BUILD_DIR/certs"
 mkdir $CERT_KEY_PATH
 CERT_KEY_FILE="$CERT_KEY_PATH/cert.key"
 update "-- CERT_KEY_FILE: $CERT_KEY_FILE"
