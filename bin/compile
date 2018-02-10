@@ -4,9 +4,9 @@
 START_TIME=$SECONDS
 
 # set -x            # debug every command
-set -o errexit    # always exit on error
-set -o pipefail   # don't ignore exit codes when piping output
-unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
+set -o errexit      # always exit on error
+set -o pipefail     # don't ignore exit codes when piping output
+unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
 ### Configure directories
 CLI_PATH="/tmp/cli"
@@ -15,18 +15,10 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
-source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
+### Load additional functions
+source $BP_DIR/lib/common.sh
 
-### Helpful functions
-header() {
-  echo "" || true
-  echo -e "-----> \e[34m$*\033[0m" || true
-  echo "" || true
-}
-
-update() {
-  echo -e "       $*" || true
-}
+# source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
 
 ### Setup functions
 setup_dirs() {
@@ -34,21 +26,10 @@ setup_dirs() {
   export PATH="$DIR/.local/share/sfdx/cli/bin:$DIR/.sfdx/bin:$PATH"
 }
 
-export_env_dir() {
-  whitelist_regex=${2:-$'^(SALESFORCE_|HEROKU_)'}
-  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
-  if [ -d "$ENV_DIR" ]; then
-    for e in $(ls $ENV_DIR); do
-      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-      export $e=$(cat $ENV_DIR/$e)
-      :
-    done
-  fi
-}
-
+### Execute
 header 'Welcome to salesforce-dx-buildpack!'
-update "Exporting environment directories ..."
-export_env "$ENV_DIR"
+# update "Exporting environment directories ..."
+# export_env "$ENV_DIR"
 
 update "Exporting env dir to vars ..."
 
