@@ -80,17 +80,17 @@ update "-- data-plans: $data_plans"
 
 # Staging
 if [ "$STAGE" == "STAGING" ]; then
-  header 'Running on $STAGE'
+  update "Running on $STAGE"
 fi
 
 # Prod
 if [ "$STAGE" == "PROD" ]; then
-  header 'Running on $STAGE'
+  update "Running on $STAGE"
 fi
 
 # Review app
 if [ "$STAGE" == "" ]; then
-  header 'Running as a review app'
+  update "Running as a REVIEW APP"
 
   # Authenticate to Dev Hub
   sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
