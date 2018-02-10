@@ -51,6 +51,7 @@ update "-- WHOAMI: $whoami"
 
 # Write to CACHE_DIR
 update "Writing to CACHE_DIR"
+mkdir -p $CACHE_DIR
 echo "hello from $whoami" > $CACHE_DIR/hello
 
 # Go to BUILD_DIR
