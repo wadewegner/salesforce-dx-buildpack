@@ -53,7 +53,9 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-ls -lR $BUILD_DIR
+# ls -lR $BUILD_DIR
+
+ls -lR $ENV_DIR
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
