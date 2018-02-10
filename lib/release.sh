@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+START_TIME=$SECONDS
+
 source common.sh
 source sfdx.sh
 source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
@@ -16,6 +18,8 @@ log "-- WHOAMI: $whoami"
 
 if [ "$STAGE" == "PROD" ]; then
 
+  log "Detected PROD. Kicking off deployment ..."
+
   auth . $SFDX_AUTH_URL s targetorg
 
   sfdx force:source:convert -d mdapiout
@@ -26,3 +30,6 @@ if [ "$STAGE" == "PROD" ]; then
   tests $run_apex_tests $apex_test_format targetorg
 
 fi
+
+header "DONE! Completed in $(($SECONDS - $START_TIME))s"
+exit 0
