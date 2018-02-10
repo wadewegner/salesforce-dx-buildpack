@@ -48,7 +48,7 @@ SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
 update "Config vars ..."
-update "-- CLIENT_ID: $CLIENT_ID"
+update "-- DEV_HUB_CLIENT_ID: $DEV_HUB_CLIENT_ID"
 update "-- DEV_HUB_USERNAME: $DEV_HUB_USERNAME"
 update "-- DEV_HUB_CERT_KEY: $DEV_HUB_CERT_KEY"
 update "-- SCRATCH_CONFIG_FILE: $SCRATCH_CONFIG_FILE"
@@ -64,7 +64,7 @@ echo "$DEV_HUB_CERT_KEY" > "$DEV_HUB_CERT_KEY_FILE"
 cd $BUILD_DIR
 
 # Authenticate to Dev Hub
-sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
+sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
 
 # Create scratch org
 sfdx force:org:create -s -f $SCRATCH_CONFIG_FILE
