@@ -132,17 +132,14 @@ fi
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
+  update "Creating Profile ..."
   echo "# Deploy source to SFDX_AUTH_URL org.
 release: .salesforce/node/bin/node .salesforce/force.js release
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
 
-  update "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
-  if [ "$SALESFORCE_DX__BUILDPACK_DEBUG" == "true" ]; then
-      debug "$BUILD_DIR/Procfile:"
-      debug "`cat $BUILD_DIR/Procfile`"
-  fi
+  update "-- Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
