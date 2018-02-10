@@ -68,7 +68,7 @@ touch $CERT_KEY_FILE
 ls $CERT_KEY_FILE
 echo "$CERT_KEY" > "$CERT_KEY_FILE"
 
-echo "sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername"
+sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
