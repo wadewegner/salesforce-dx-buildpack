@@ -66,6 +66,7 @@ cd $BUILD_DIR
 update "Parse .salesforcex.yml values ..."
 
 # Parse .salesforcedx.yml file into env
+#BUG: not parsing arrays properly
 eval $(parse_yaml .salesforcedx.yml)
 
 update "-- scratch-org-def: $scratch_org_def"
