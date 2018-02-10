@@ -56,7 +56,7 @@ update "-- CLIENT_ID: $CLIENT_ID"
 update "-- USERNAME: $USERNAME"
 update "-- CERT_KEY: $CERT_KEY"
 
-CERT_KEY_PATH="$CACHE_DIR/certs"
+CERT_KEY_PATH="certs"
 mkdir $CERT_KEY_PATH
 
 ls -lR $CERT_KEY_PATH
