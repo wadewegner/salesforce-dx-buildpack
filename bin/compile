@@ -51,7 +51,6 @@ update "Config vars ..."
 update "-- DEV_HUB_CLIENT_ID: $DEV_HUB_CLIENT_ID"
 update "-- DEV_HUB_USERNAME: $DEV_HUB_USERNAME"
 update "-- DEV_HUB_CERT_KEY: $DEV_HUB_CERT_KEY"
-update "-- SCRATCH_CONFIG_FILE: $SCRATCH_CONFIG_FILE"
 
 # Create cert.key
 DEV_HUB_CERT_KEY_PATH="$BUILD_DIR/certs"
@@ -60,6 +59,19 @@ DEV_HUB_CERT_KEY_FILE="$DEV_HUB_CERT_KEY_PATH/cert.key"
 update "-- DEV_HUB_CERT_KEY_FILE: $DEV_HUB_CERT_KEY_FILE"
 echo "$DEV_HUB_CERT_KEY" > "$DEV_HUB_CERT_KEY_FILE"
 
+# Parse .salesforcedx.yml file
+eval $(parse_yaml .salesforcedx.yml "sfdx_")
+
+update ".salesforcex.yml values ..."
+
+update "-- scratch-org-def: $sfdx_scratch-org-def"
+update "-- assign-permset: $sfdx_assign-permset"
+update "-- permset-name: $sfdx_permset-name"
+update "-- run-apex-tests: $run-apex-tests"
+update "-- apex-test-format: $sfdx_apex-test-format"
+update "-- delete-scratch-org: $sfdx_delete-scratch-org"
+update "-- show-scratch-org-url: $sfdx_show-scratch-org-url"
+
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
@@ -67,7 +79,7 @@ cd $BUILD_DIR
 sfdx force:auth:jwt:grant --clientid $DEV_HUB_CLIENT_ID --username $DEV_HUB_USERNAME --jwtkeyfile $DEV_HUB_CERT_KEY_FILE --setdefaultdevhubusername
 
 # Create scratch org
-sfdx force:org:create -s -f $SCRATCH_CONFIG_FILE
+sfdx force:org:create -s -f $sfdx_scratch-org-def
 
 # Push source
 sfdx force:source:push
