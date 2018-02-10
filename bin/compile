@@ -73,8 +73,16 @@ update "-- delete-scratch-org: $delete_scratch_org"
 update "-- open-path: $open_path"
 update "-- data-plans: $data_plans"
 
+# Auth for Staging and Prod
+if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ] then
+  SFDX_AUTH_URL_FILE = "$BUILD_DIR/sfdxurl"
+  echo "$SFDX_AUTH_URL" > $SFDX_AUTH_URL_FILE
+
+  sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s
+fi
+
 # Staging
-if [ "$STAGE" == "STAGING" ]; then
+if [ "$STAGE" == "PROD" ]; then
   update "Running on $STAGE ..."
 fi
 
