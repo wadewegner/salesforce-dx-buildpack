@@ -61,9 +61,11 @@ mkdir CERT_KEY_PATH
 CERT_KEY_FILE="$CERT_KEY_PATH/cert.key"
 update "-- CERT_KEY_FILE: $CERT_KEY_FILE"
 
+touch $CERT_KEY_FILE
+ls $CERT_KEY_FILE
 echo "$CERT_KEY" > "$CERT_KEY_FILE"
 
-sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
+echo "sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername"
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
