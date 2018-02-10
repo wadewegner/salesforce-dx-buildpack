@@ -82,7 +82,7 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   cat $SFDX_AUTH_URL_FILE
 
-  echo "sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s"
+  sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -s
 fi
 
 # Staging
