@@ -133,7 +133,7 @@ fi
 
 update "Copying release.sh to BUILD_DIR/.release ..."
 mkdir -p .release
-cp $BP_DIR/lib/release.sh $BUILD_DIR/.release/
+cp $BP_DIR/lib/release.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0

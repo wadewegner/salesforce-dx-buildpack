@@ -46,3 +46,15 @@ header() {
 update() {
   echo -e "       $*" || true
 }
+
+status() {
+  echo "-----> $*"
+}
+
+log() {
+  echo -e "       $*"
+}
+
+debug() {
+  echo "       [DEBUG] $*"
+}
