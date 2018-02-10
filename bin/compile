@@ -49,6 +49,10 @@ update "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 whoami=$(whoami)
 update "-- WHOAMI: $whoami"
 
+# Write to CACHE_DIR
+update "Writing to CACHE_DIR"
+echo "hello from $whoami" > $CACHE_DIR/hello
+
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
@@ -121,7 +125,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   update "Creating Profile ..."
   echo "# Deploy source to production org.
-release: pwd && ls -lR && whoami
+release: pwd && ls -lR && whoami && cat /tmp/cache/hello
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
