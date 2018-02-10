@@ -77,7 +77,7 @@ update "-- data-plans: $data_plans"
 if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
   
   echo "made it"
-  SFDX_AUTH_URL_FILE = "$BUILD_DIR/sfdxurl"
+  SFDX_AUTH_URL_FILE="$BUILD_DIR/sfdxurl"
   echo "$SFDX_AUTH_URL" > $SFDX_AUTH_URL_FILE
 
   cat $SFDX_AUTH_URL_FILE
