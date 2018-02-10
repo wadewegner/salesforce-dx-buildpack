@@ -34,9 +34,26 @@ setup_dirs() {
   export PATH="$DIR/.local/share/sfdx/cli/bin:$DIR/.sfdx/bin:$PATH"
 }
 
+export_env_dir() {
+  whitelist_regex=${2:-$'^(SALESFORCE_|HEROKU_)'}
+  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$ENV_DIR" ]; then
+    for e in $(ls $ENV_DIR); do
+      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
+      export $e=$(cat $ENV_DIR/$e)
+      :
+    done
+  fi
+}
+
 header 'Welcome to salesforce-dx-buildpack!'
 update "Exporting environment directories ..."
 export_env "$ENV_DIR"
+
+update "Exporting env dir to vars ..."
+
+export_env_dir
+
 update "Setting up paths ..."
 
 update "-- BUILD_DIR" $BUILD_DIR
@@ -53,9 +70,9 @@ update "-- sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
 update "-- Plugins: " $SFDX_PLUGINS
 
-# ls -lR $BUILD_DIR
+ls -lR $BUILD_DIR
 
-ls -lR $ENV_DIR
+echo "CLIENT_ID: $CLIENT_ID"
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
