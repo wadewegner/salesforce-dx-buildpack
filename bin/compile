@@ -74,7 +74,7 @@ update "-- open-path: $open_path"
 update "-- data-plans: $data_plans"
 
 # Auth for Staging and Prod
-if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ] then
+if [ "$STAGE" == "STAGING" ]; || [ "$STAGE" == "PROD" ]; then
   
   echo "made it"
   SFDX_AUTH_URL_FILE = "$BUILD_DIR/sfdxurl"
