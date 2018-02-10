@@ -12,3 +12,9 @@ log "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 
 whoami=$(whoami)
 log "-- WHOAMI: $whoami"
+
+# if [ "$STAGE" == "PROD" ]; then
+
+sfdx version
+
+# fi
