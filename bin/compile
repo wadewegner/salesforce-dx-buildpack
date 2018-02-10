@@ -117,7 +117,7 @@ fi
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
   update "Creating Profile ..."
-  echo "# Deploy source to SFDX_AUTH_URL org.
+  echo "# Deploy source to production org.
 release: pwd
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
