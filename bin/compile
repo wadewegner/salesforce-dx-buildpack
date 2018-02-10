@@ -49,11 +49,6 @@ update "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 whoami=$(whoami)
 update "-- WHOAMI: $whoami"
 
-# Write to CACHE_DIR
-update "Writing to CACHE_DIR"
-mkdir -p $CACHE_DIR
-echo "hello from $whoami" > $CACHE_DIR/hello
-
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
@@ -120,19 +115,25 @@ if [ "$STAGE" == "" ]; then
   fi
 fi
 
-### Procfile
+### Procfile & Release Phase
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
   update "Creating Profile ..."
   echo "# Deploy source to production org.
-release: pwd && ls -lR && whoami && cat tmp/cache/hello
+release: pwd && ls -lR && whoami
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
 
   update "-- Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
+
+# copy release.sh
+
+update "Coping release.sh to BUILD_DIR/.release"
+mkdir -r .release
+cp $BP_DIR/lib/release.sh $BUILD_DIR/.release/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
