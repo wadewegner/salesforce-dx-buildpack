@@ -31,10 +31,6 @@ header 'Welcome to salesforce-dx-buildpack!'
 update "Exporting environment directories ..."
 export_env "$ENV_DIR"
 
-# update "Exporting env dir to vars ..."
-
-# export_env_dir
-
 update "Setting up paths ..."
 
 update "-- BUILD_DIR" $BUILD_DIR
@@ -65,6 +61,8 @@ echo "$CERT_KEY" > "$CERT_KEY_FILE"
 
 # Authenticate to Dev Hub
 sfdx force:auth:jwt:grant --clientid $CLIENT_ID --username $USERNAME --jwtkeyfile $CERT_KEY_FILE --setdefaultdevhubusername
+
+
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
