@@ -145,8 +145,6 @@ debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
 debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
 cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
-debug "redirect.js to $BUILD_DIR/redirect.js"
-cp $BP_DIR/lib/redirect.js $BUILD_DIR/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
