@@ -135,18 +135,6 @@ web: node redirect.js redirect" > $BUILD_DIR/Procfile
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
 
-# # create package.json to make Node buildpack happen
-# if [ ! -f $BUILD_DIR/package.json ]; then
-#   log "Creating package.json ..."
-#   echo "{
-#   \"name\": \"Default\",
-#   \"description\": \"A default package.json because it's required\",
-#   \"repository\": \"https://github.com/wadewegner/salesforce-dx-pipeline-sample\",
-# }" > $BUILD_DIR/package.json
-
-#   debug "Generated package.json"
-# fi
-
 # copy scripts needed for release phase
 log "Copying files for release phase ..."
 
