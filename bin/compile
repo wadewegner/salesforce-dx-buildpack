@@ -133,6 +133,8 @@ log "Copying common.sh to $BUILD_DIR/common.sh ..."
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
 log "Copying sfdx.sh to $BUILD_DIR/sfdx.sh ..."
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
+log "Copying stdlib.sh to $BUILD_DIR/stdlib.sh ..."
+cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
