@@ -116,7 +116,7 @@ fi
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
-  log "Creating Profile ..."
+  log "Creating Procfile ..."
   echo "# Deploy source to production org.
 release: ./release.sh
 web: node /redirect.js redirect" > $BUILD_DIR/Procfile
