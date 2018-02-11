@@ -130,7 +130,9 @@ fi
 if [ ! -f $BUILD_DIR/package.json ]; then
   log "Creating package.json ..."
   echo "{
-  \"name\": \"default-package\",
+  \"name\": \"Default\",
+  \"description\": \"A default package.json because it's required\",
+  \"repository\": \"https://github.com/wadewegner/salesforce-dx-pipeline-sample\",
 }" > $BUILD_DIR/package.json
 
   debug "Generated package.json"
@@ -152,8 +154,6 @@ cp $BP_DIR/lib/redirect.js $BUILD_DIR/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
-
-
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
