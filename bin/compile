@@ -148,17 +148,17 @@ fi
 # fi
 
 # copy scripts needed for release phase
-log "Copying files for release phase"
+log "Copying files for release phase ..."
 
-debug "release.sh to $BUILD_DIR/release.sh ..."
+debug "release.sh to $BUILD_DIR/release.sh"
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
-debug "common.sh to $BUILD_DIR/common.sh ..."
+debug "common.sh to $BUILD_DIR/common.sh"
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
-debug "sfdx.sh to $BUILD_DIR/sfdx.sh ..."
+debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
-debug "stdlib.sh to $BUILD_DIR/stdlib.sh ..."
+debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
 cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
-debug "redirect.js to $BUILD_DIR/redirect.js ..."
+debug "redirect.js to $BUILD_DIR/redirect.js"
 cp $BP_DIR/lib/redirect.js $BUILD_DIR/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
