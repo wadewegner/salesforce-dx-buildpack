@@ -69,6 +69,7 @@ debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
 debug "apex-test-format: $apex_test_format"
 debug "delete-scratch-org: $delete_scratch_org"
+debug "show-scratch-org-url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
@@ -105,6 +106,16 @@ if [ "$STAGE" == "" ]; then
 
   # Run tests
   tests $run_apex_tests $apex_test_format targetorg
+
+  # Show scratch org URL
+  if [ "$show_scratch_org_url" == "true" ]; then
+    if [ ! "$open_path" == "" ]; then
+      sfdx force:org:open -r $open_path
+    fi
+    if [ "$open_path" == "" ]; then
+      sfdx force:org:open -r
+    fi
+  fi
 
   # Delete scratch org
   if [ "$delete_scratch_org" == "true" ]; then
