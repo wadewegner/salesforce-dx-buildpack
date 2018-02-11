@@ -58,5 +58,8 @@ log() {
 }
 
 debug() {
-  echo "       [DEBUG] $*"
+
+  if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
+    echo "       [DEBUG] $*"
+  fi
 }

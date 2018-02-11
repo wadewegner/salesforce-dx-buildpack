@@ -6,12 +6,15 @@ source common.sh
 source sfdx.sh
 source stdlib.sh
 
+: ${SFDX_BUILDPACK_DEBUG:="false"}
+
 header "Running release.sh"
 
 log "Config vars ..."
 debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
 debug "STAGE: $STAGE"
 debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
+debug "SFDX_BUILDPACK_DEBUG: $SFDX_BUILDPACK_DEBUG"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
