@@ -3,13 +3,11 @@
 
 START_TIME=$SECONDS
 
-# set -x            # debug every command
 set -o errexit      # always exit on error
 set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
 ### Configure directories
-CLI_PATH="/tmp/cli"
 BUILD_DIR=${1:-}
 CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
@@ -22,56 +20,56 @@ source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib
 
 ### Execute
 header 'Welcome to salesforce-dx-buildpack!'
-update "Exporting environment directories ..."
+log "Exporting environment directories ..."
 export_env "$ENV_DIR"
 
-update "Setting up paths ..."
+log "Setting up paths ..."
 
-update "-- BUILD_DIR" $BUILD_DIR
-update "-- CACHE_DIR" $CACHE_DIR
-update "-- ENV_DIR" $ENV_DIR
+debug "BUILD_DIR" $BUILD_DIR
+debug "CACHE_DIR" $CACHE_DIR
+debug "ENV_DIR" $ENV_DIR
 
 setup_dirs "$BUILD_DIR"
 
-update "Updating CLI ..."
+log "Updating CLI ..."
 sfdx update &>/dev/null
-update "-- Completed 'sfdx update'"
+debug "Completed 'sfdx update'"
 SFDX_VERSION=$(sfdx version)
-update "-- sfdx version: " $SFDX_VERSION
+debug "sfdx version: " $SFDX_VERSION
 SFDX_PLUGINS=$(sfdx plugins --core)
-update "-- Plugins: " $SFDX_PLUGINS
+debug "Plugins: " $SFDX_PLUGINS
 
-update "Config vars ..."
-update "-- DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
-update "-- STAGE: $STAGE"
-update "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
+log "Config vars ..."
+debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
+debug "STAGE: $STAGE"
+debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
 
 whoami=$(whoami)
-update "-- WHOAMI: $whoami"
+debug "WHOAMI: $whoami"
 
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
-update "Parse .salesforcex.yml values ..."
+log "Parse .salesforcex.yml values ..."
 
 # Parse .salesforcedx.yml file into env
 #BUG: not parsing arrays properly
 eval $(parse_yaml .salesforcedx.yml)
 
-update "-- scratch-org-def: $scratch_org_def"
-update "-- assign-permset: $assign_permset"
-update "-- permset-name: $permset_name"
-update "-- run-apex-tests: $run_apex_tests"
-update "-- apex-test-format: $apex_test_format"
-update "-- delete-scratch-org: $delete_scratch_org"
-update "-- open-path: $open_path"
-update "-- data-plans: $data_plans"
+debug "scratch-org-def: $scratch_org_def"
+debug "assign-permset: $assign_permset"
+debug "permset-name: $permset_name"
+debug "run-apex-tests: $run_apex_tests"
+debug "apex-test-format: $apex_test_format"
+debug "delete-scratch-org: $delete_scratch_org"
+debug "open-path: $open_path"
+debug "data-plans: $data_plans"
 
 ### Staging and Prod
 
 if [ "$STAGE" == "DEV" ] || [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
-  update "Running on $STAGE ..."
+  log "Running on $STAGE ..."
   
   auth $BUILD_DIR $SFDX_AUTH_URL s targetorg
 
@@ -87,7 +85,7 @@ fi
 ### Review app
 
 if [ "$STAGE" == "" ]; then
-  update "Running as a REVIEW APP ..."
+  log "Running as a REVIEW APP ..."
 
   # Authenticate to Dev Hub
   auth $BUILD_DIR $DEV_HUB_SFDX_AUTH_URL d huborg
@@ -111,22 +109,22 @@ fi
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
-  update "Creating Profile ..."
+  log "Creating Profile ..."
   echo "# Deploy source to production org.
 release: ./release.sh
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 # web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
 
-  update "-- Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
+  log "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
 
 # copy scripts needed for release phase
-update "Copying release.sh to $BUILD_DIR/release.sh ..."
+log "Copying release.sh to $BUILD_DIR/release.sh ..."
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
-update "Copying common.sh to $BUILD_DIR/common.sh ..."
+log "Copying common.sh to $BUILD_DIR/common.sh ..."
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
-update "Copying sfdx.sh to $BUILD_DIR/sfdx.sh ..."
+log "Copying sfdx.sh to $BUILD_DIR/sfdx.sh ..."
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"

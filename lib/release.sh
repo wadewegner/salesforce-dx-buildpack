@@ -9,12 +9,12 @@ source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib
 header "Running release.sh"
 
 log "Config vars ..."
-log "-- DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
-log "-- STAGE: $STAGE"
-log "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
+debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
+debug "STAGE: $STAGE"
+debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
 
 whoami=$(whoami)
-log "-- WHOAMI: $whoami"
+debug "WHOAMI: $whoami"
 
 if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
@@ -27,7 +27,9 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
   # Run tests
-  tests $run_apex_tests $apex_test_format targetorg
+  if [ ! "$STAGE" == "PROD" ] ; then
+    tests "$run_apex_tests" "$apex_test_format" targetorg
+  fi
 
 fi
 

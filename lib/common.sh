@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 setup_dirs() {
   local DIR="$1"
   export PATH="$DIR/.local/share/sfdx/cli/bin:$DIR/.sfdx/bin:$PATH"
@@ -43,9 +45,9 @@ header() {
   echo "" || true
 }
 
-update() {
-  echo -e "       $*" || true
-}
+# update() {
+#   echo -e "       $*" || true
+# }
 
 status() {
   echo "-----> $*"
