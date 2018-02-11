@@ -119,9 +119,7 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Profile ..."
   echo "# Deploy source to production org.
 release: ./release.sh
-# Redirect all Heroku app domain requests to org.
-# Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
-web: .salesforce/redirect.js redirect" > $BUILD_DIR/Procfile
+web: node /redirect.js redirect" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
