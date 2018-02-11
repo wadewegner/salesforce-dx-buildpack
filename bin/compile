@@ -121,13 +121,14 @@ if [ ! -f $BUILD_DIR/Procfile ]; then
 release: ./release.sh
 # Redirect all Heroku app domain requests to org.
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
-# web: .salesforce/node/bin/node .salesforce/force.js redirect" > $BUILD_DIR/Procfile
+web: .salesforce/redirect.js redirect" > $BUILD_DIR/Procfile
 
   log "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
 
 # copy scripts needed for release phase
 log "Copying files for release phase"
+
 debug "release.sh to $BUILD_DIR/release.sh ..."
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
 debug "common.sh to $BUILD_DIR/common.sh ..."
@@ -136,9 +137,11 @@ debug "sfdx.sh to $BUILD_DIR/sfdx.sh ..."
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
 debug "stdlib.sh to $BUILD_DIR/stdlib.sh ..."
 cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
+debug "redirect.js to $BUILD_DIR/redirect.js ..."
+cp $BP_DIR/lib/redirect.js $BUILD_DIR/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
-exit 0git
+exit 0
