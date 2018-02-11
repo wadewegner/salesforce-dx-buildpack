@@ -69,7 +69,7 @@ update "-- data-plans: $data_plans"
 
 ### Staging and Prod
 
-if [ [ "$STAGE" == "DEV" || "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
+if [ [ "$STAGE" == "DEV" ] || "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   update "Running on $STAGE ..."
   
