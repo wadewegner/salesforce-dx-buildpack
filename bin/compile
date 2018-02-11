@@ -67,7 +67,8 @@ update "-- delete-scratch-org: $delete_scratch_org"
 update "-- open-path: $open_path"
 update "-- data-plans: $data_plans"
 
-# Auth for Staging and Prod
+### Staging and Prod
+
 if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   update "Running on $STAGE ..."
@@ -83,9 +84,9 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
 fi
 
-###  Review app
+### Review app
 
-if [ "$STAGE" == "" ]; then
+if [ "$STAGE" == "" ] || [ "$STAGE" == "DEV" ; then
   update "Running as a REVIEW APP ..."
 
   # Authenticate to Dev Hub
