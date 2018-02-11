@@ -4,7 +4,7 @@ START_TIME=$SECONDS
 
 source common.sh
 source sfdx.sh
-source <(curl -s --retry 3 https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh)
+source stdlib.sh
 
 header "Running release.sh"
 
