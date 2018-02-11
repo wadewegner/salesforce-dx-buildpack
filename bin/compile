@@ -122,11 +122,11 @@ release: ./release.sh
 fi
 
 # copy scripts needed for release phase
-update "Copying release.sh to BUILD_DIR/release.sh ..."
+update "Copying release.sh to $BUILD_DIR/release.sh ..."
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
-update "Copying common.sh to BUILD_DIR/common.sh ..."
+update "Copying common.sh to $BUILD_DIR/common.sh ..."
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
-update "Copying sfdx.sh to BUILD_DIR/sfdx.sh ..."
+update "Copying sfdx.sh to $BUILD_DIR/sfdx.sh ..."
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
