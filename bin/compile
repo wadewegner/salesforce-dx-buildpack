@@ -123,7 +123,17 @@ release: ./release.sh
 # Defaults to /one/one.app, configurable via open-path var in .salesforcedx.yml.
 web: .salesforce/redirect.js redirect" > $BUILD_DIR/Procfile
 
-  log "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
+  debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
+fi
+
+# create package.json to make Node buildpack happen
+if [ ! -f $BUILD_DIR/package.json ]; then
+  log "Creating package.json ..."
+  echo "{
+  \"name\": \"default-package\",
+}" > $BUILD_DIR/package.json
+
+  debug "Generated package.json"
 fi
 
 # copy scripts needed for release phase
@@ -142,6 +152,8 @@ cp $BP_DIR/lib/redirect.js $BUILD_DIR/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
+
+
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
 exit 0
