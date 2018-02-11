@@ -127,14 +127,18 @@ release: ./release.sh
 fi
 
 # copy scripts needed for release phase
-log "Copying release.sh to $BUILD_DIR/release.sh ..."
+log "Copying files for release phase"
+debug "release.sh to $BUILD_DIR/release.sh ..."
 cp $BP_DIR/lib/release.sh $BUILD_DIR/
-log "Copying common.sh to $BUILD_DIR/common.sh ..."
+debug "common.sh to $BUILD_DIR/common.sh ..."
 cp $BP_DIR/lib/common.sh $BUILD_DIR/
-log "Copying sfdx.sh to $BUILD_DIR/sfdx.sh ..."
+debug "sfdx.sh to $BUILD_DIR/sfdx.sh ..."
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
-log "Copying stdlib.sh to $BUILD_DIR/stdlib.sh ..."
+debug "stdlib.sh to $BUILD_DIR/stdlib.sh ..."
 cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
 
+# TODO: can we be smart and delete or replace .profile during the appropriate
+# stage so that the release phase is faster?
+
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
-exit 0
+exit 0git
