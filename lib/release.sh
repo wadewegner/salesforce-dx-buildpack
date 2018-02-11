@@ -16,7 +16,7 @@ log "-- SFDX_AUTH_URL: $SFDX_AUTH_URL"
 whoami=$(whoami)
 log "-- WHOAMI: $whoami"
 
-if [ "$STAGE" == "PROD" ]; then
+if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   log "Detected PROD. Kicking off deployment ..."
 
