@@ -36,13 +36,7 @@ debug "BP_DIR: $BP_DIR"
 
 setup_dirs "$BUILD_DIR"
 
-# Update CLI
-log "Updating CLI ..."
-
-ls -lR
-
-sfdx update &>/dev/null
-debug "Completed 'sfdx update'"
+# CLI details
 SFDX_VERSION=$(sfdx version)
 debug "sfdx version: $SFDX_VERSION"
 SFDX_PLUGINS=$(sfdx plugins --core)
