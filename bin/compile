@@ -4,6 +4,7 @@
 START_TIME=$SECONDS
 
 if [ "$SFDX_BUILDPACK_DEBUG" == "true" ]; then
+  debug "debugging more"
   set -x
 fi
 set -o errexit      # always exit on error
