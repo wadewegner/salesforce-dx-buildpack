@@ -2,7 +2,7 @@
 
 setup_dirs() {
   local DIR="$1"
-  export PATH="$DIR/.local/share/sfdx/cli/bin:$DIR/.sfdx/bin:$PATH"
+  export PATH="$DIR/vendor/sfdx/cli/bin:$PATH"
 }
 
 export_env_dir() {
