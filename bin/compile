@@ -38,6 +38,9 @@ setup_dirs "$BUILD_DIR"
 
 # Update CLI
 log "Updating CLI ..."
+
+ls -lR
+
 sfdx update &>/dev/null
 debug "Completed 'sfdx update'"
 SFDX_VERSION=$(sfdx version)
@@ -103,6 +106,8 @@ if [ "$STAGE" == "" ]; then
 
   # Push source
   sfdx force:source:push -u targetorg
+
+  ####
 
   # Run tests
   tests $run_apex_tests $apex_test_format targetorg
