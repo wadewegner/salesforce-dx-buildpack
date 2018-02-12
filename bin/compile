@@ -3,6 +3,7 @@
 
 START_TIME=$SECONDS
 
+# set -x
 set -o errexit      # always exit on error
 set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
@@ -36,10 +37,7 @@ debug "BP_DIR: $BP_DIR"
 
 setup_dirs "$BUILD_DIR"
 
-# Update CLI
-log "Updating CLI ..."
-sfdx update &>/dev/null
-debug "Completed 'sfdx update'"
+# CLI details
 SFDX_VERSION=$(sfdx version)
 debug "sfdx version: $SFDX_VERSION"
 SFDX_PLUGINS=$(sfdx plugins --core)
@@ -103,6 +101,8 @@ if [ "$STAGE" == "" ]; then
 
   # Push source
   sfdx force:source:push -u targetorg
+
+  ####
 
   # Run tests
   tests $run_apex_tests $apex_test_format targetorg
