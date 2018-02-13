@@ -44,11 +44,6 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
-  # Run tests
-  if [ ! "$STAGE" == "PROD" ] ; then
-    tests "$run_apex_tests" "$apex_test_format" targetorg
-  fi
-
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"

@@ -83,9 +83,6 @@ if [ "$STAGE" == "DEV" ] || [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ];
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
-  # Run tests
-  tests $run_apex_tests $apex_test_format targetorg
-
 fi
 
 ### Review app
@@ -101,11 +98,6 @@ if [ "$STAGE" == "" ]; then
 
   # Push source
   sfdx force:source:push -u targetorg
-
-  ####
-
-  # Run tests
-  tests $run_apex_tests $apex_test_format targetorg
 
   # Show scratch org URL
   if [ "$show_scratch_org_url" == "true" ]; then
