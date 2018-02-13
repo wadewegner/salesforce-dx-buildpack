@@ -52,6 +52,9 @@ debug "SFDX_BUILDPACK_DEBUG : $SFDX_BUILDPACK_DEBUG"
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
 
+# Create a bin directory
+mkdir -p $BUILD_DIR/bin
+
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
@@ -83,6 +86,11 @@ if [ "$STAGE" == "DEV" ] || [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ];
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
+  # run post-setup script
+  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
+    sh "$BUILD_DIR/bin/post-setup.sh"
+  fi
+
 fi
 
 ### Review app
@@ -109,14 +117,16 @@ if [ "$STAGE" == "" ]; then
     fi
   fi
 
+  # run post-setup script
+  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
+    sh "$BUILD_DIR/bin/post-setup.sh"
+  fi
+
   # Delete scratch org
   if [ "$delete_scratch_org" == "true" ]; then
     sfdx force:org:delete -p
   fi
 fi
-
-# Create a bin directory
-mkdir -p $BUILD_DIR/bin
 
 # Setup tests for Heroku CI
 if [ "$run_apex_tests" == "true" ];

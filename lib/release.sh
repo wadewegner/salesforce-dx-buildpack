@@ -44,6 +44,11 @@ if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
 
+  # run post-setup script
+  if [ -f "bin/post-setup.sh" ]; then
+    sh "bin/post-setup.sh"
+  fi
+
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
