@@ -132,10 +132,10 @@ then
   if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
     log "Creating $BUILD_DIR/bin/test-setup.sh ..."
     cat <<EOF >$BUILD_DIR/bin/test-setup.sh
+set -x
 # Log testing org
-displayCmd="sfdx force:org:display -u $TARGET_ORG_ALIAS"
-echo \$displayCmd
-eval \$displayCmd
+sfdx force:org:display -u $TARGET_ORG_ALIAS
+set +x
 
 EOF
     chmod +x $BUILD_DIR/bin/test-setup.sh
@@ -145,10 +145,10 @@ EOF
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
     cat <<EOF >$BUILD_DIR/bin/test.sh
+set -x
 # Run all tests in org
-testCmd="sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS"
-echo \$testCmd
-eval \$testCmd
+sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS
+set +x
 
 EOF
     chmod +x $BUILD_DIR/bin/test.sh
