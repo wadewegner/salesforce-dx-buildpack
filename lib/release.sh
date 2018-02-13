@@ -68,7 +68,7 @@ if [ "$STAGE" == "" ]; then
   auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_ORG_ALIAS"
 
   # Push source
-  invokeCmd("sfdx force:source:push -u $TARGET_ORG_ALIAS")
+  invokeCmd "sfdx force:source:push -u $TARGET_ORG_ALIAS"
 
   # Show scratch org URL
   if [ "$show_scratch_org_url" == "true" ]; then
@@ -76,7 +76,7 @@ if [ "$STAGE" == "" ]; then
     if [ ! "$open_path" == "" ]; then
       openCmd = "sfdx force:org:open -r -p $open_path"
     fi
-    invokeCmd(openCmd)
+    invokeCmd openCmd
   fi
 
 fi
@@ -88,9 +88,9 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
-  invokeCmd("sfdx force:source:convert -d mdapiout")
+  invokeCmd "sfdx force:source:convert -d mdapiout"
 
-  invokeCmd("sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS")
+  invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
 
 fi
 
