@@ -98,6 +98,7 @@ if [ ! "$STAGE" == "" ]; then
 
   else
 
+    log "Calling bin/mdapi-deploy.sh"
     sh "bin/mdapi-deploy.sh" "$TARGET_ORG_ALIAS" "$STAGE"
 
   fi
