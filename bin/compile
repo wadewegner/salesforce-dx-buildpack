@@ -47,7 +47,11 @@ debug "Plugins: $SFDX_PLUGINS"
 debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
 debug "STAGE: $STAGE"
 debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
-debug "SFDX_BUILDPACK_DEBUG : $SFDX_BUILDPACK_DEBUG"
+debug "SFDX_BUILDPACK_DEBUG: $SFDX_BUILDPACK_DEBUG"
+debug "CI: $CI"
+debug "HEROKU_TEST_RUN_BRANCH: $HEROKU_TEST_RUN_BRANCH"
+debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
+debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -107,6 +111,7 @@ if [ "$STAGE" == "" ]; then
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
   log "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+
 
   # Push source
   sfdx force:source:push -u targetorg
