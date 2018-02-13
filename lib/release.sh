@@ -54,7 +54,9 @@ if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
 
-
+  scratchSfdxAuthUrlFile=$vendorDir/$SOURCE_VERSION_FROM_COMPILE
+  scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
+  debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
 
 fi
 
