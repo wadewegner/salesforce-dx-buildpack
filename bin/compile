@@ -104,6 +104,10 @@ if [ "$STAGE" == "" ]; then
   # Create scratch org
   sfdx force:org:create -s -f $scratch_org_def -a targetorg
 
+  # Store creds for scratch org
+  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
+  log "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+
   # Push source
   sfdx force:source:push -u targetorg
 
