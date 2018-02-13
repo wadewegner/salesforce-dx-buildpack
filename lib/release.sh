@@ -90,7 +90,7 @@ if [ ! "$STAGE" == "" ]; then
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
   # run mdapi-deploy script
-  if [ -f "bin/mdapi-deploy.sh" ];
+  if [ ! -f "bin/mdapi-deploy.sh" ];
   then
 
     invokeCmd "sfdx force:source:convert -d mdapiout"
