@@ -50,6 +50,7 @@ debug "delete-scratch-org: $delete_scratch_org"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
+# If review app or CI
 if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
@@ -79,18 +80,9 @@ if [ "$STAGE" == "" ]; then
     fi
   fi
 
-  # run post-setup script
-  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
-    sh "$BUILD_DIR/bin/post-setup.sh"
-  fi
-
-  # Delete scratch org
-  if [ "$delete_scratch_org" == "true" ]; then
-    sfdx force:org:delete -p
-  fi
-
 fi
 
+# If Development, Staging, or Prod
 if [ ! "$STAGE" == "" ]; then
 
   log "Detected $STAGE. Kicking off deployment ..."
@@ -101,11 +93,11 @@ if [ ! "$STAGE" == "" ]; then
 
   sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS
 
-  # run post-setup script
-  if [ -f "bin/post-setup.sh" ]; then
-    sh "bin/post-setup.sh"
-  fi
+fi
 
+# run post-setup script
+if [ -f "bin/post-setup.sh" ]; then
+  sh "bin/post-setup.sh"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
