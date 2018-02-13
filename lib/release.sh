@@ -89,9 +89,18 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
-  invokeCmd "sfdx force:source:convert -d mdapiout"
+  # run metadata-override script
+  if [ -f "bin/metadata-override.sh" ];
+  then
 
-  invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+    invokeCmd "sfdx force:source:convert -d mdapiout"
+    invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+
+  else
+
+    sh "bin/metadata-override.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+
+  fi
 
 fi
 
