@@ -56,12 +56,12 @@ debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
 
 # Set target org alias
-TARGET_ORG_ALIAS="$SOURCE_VERSION"
+TARGET_ORG_ALIAS="ra$SOURCE_VERSION"
 TARGET_ORG_NAME=""
 
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
-  TARGET_ORG_ALIAS="ci"
+  TARGET_ORG_ALIAS="ci$HEROKU_TEST_RUN_COMMIT_VERSION"
   TARGET_ORG_NAME="AppHub Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
 fi
 
@@ -100,7 +100,7 @@ debug "data-plans: $data_plans"
 if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
-  
+
   if [ ! "$CI" == "" ]; then
     log "Running via CI ..."
   fi
