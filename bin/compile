@@ -112,7 +112,7 @@ if [ "$STAGE" == "" ]; then
   auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  invokeCmd("sfdx force:org:create -s -f \"$scratch_org_def\" -a \"$TARGET_ORG_ALIAS\" orgName=\"$TARGET_ORG_NAME\"")
+  invokeCmd('sfdx force:org:create -s -f "$scratch_org_def" -a "$TARGET_ORG_ALIAS" orgName="$TARGET_ORG_NAME"')
 
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
