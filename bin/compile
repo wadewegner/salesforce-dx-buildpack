@@ -57,12 +57,12 @@ debug "SOURCE_VERSION: $SOURCE_VERSION"
 
 # Set target org alias
 TARGET_ORG_ALIAS="ra$SOURCE_VERSION"
-TARGET_ORG_NAME="Review App: $SOURCE_VERSION"
+TARGET_ORG_NAME="\"Review App: $SOURCE_VERSION\""
 
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
   TARGET_ORG_ALIAS="ci$HEROKU_TEST_RUN_COMMIT_VERSION"
-  TARGET_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
+  TARGET_ORG_NAME="\"Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION\""
 fi
 
 debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
@@ -109,7 +109,7 @@ if [ "$STAGE" == "" ]; then
   auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  sfdx force:org:create -s -f $scratch_org_def -a $TARGET_ORG_ALIAS orgName=$TARGET_ORG_NAME
+  sfdx force:org:create -s -f "$scratch_org_def" -a "$TARGET_ORG_ALIAS" orgName="$TARGET_ORG_NAME"
 
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
