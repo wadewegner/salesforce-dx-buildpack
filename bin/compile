@@ -115,6 +115,9 @@ if [ "$STAGE" == "" ]; then
   fi
 fi
 
+# Create a bin directory
+mkdir -p $BUILD_DIR/bin
+
 # Setup tests for Heroku CI
 if [ "$run_apex_tests" == "true" ];
 then
