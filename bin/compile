@@ -59,12 +59,12 @@ debug "SOURCE_VERSION: $SOURCE_VERSION"
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
   TARGET_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
-  TARGET_ORG_NAME="\"Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION\""
+  TARGET_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
 else
   # HEROKU_APP_NAME available via required=true in app.json
   APP_NAME=${HEROKU_APP_NAME:-$SOURCE_VERSION}
   TARGET_ORG_ALIAS="ra-$APP_NAME"
-  TARGET_ORG_NAME="\"Pipeline Review App: $APP_NAME\""
+  TARGET_ORG_NAME="Pipeline Review App: $APP_NAME"
 fi
 
 debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
