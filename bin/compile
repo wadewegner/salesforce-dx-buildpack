@@ -47,10 +47,40 @@ debug "Plugins: $SFDX_PLUGINS"
 debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
 debug "STAGE: $STAGE"
 debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
-debug "SFDX_BUILDPACK_DEBUG : $SFDX_BUILDPACK_DEBUG"
+debug "SFDX_BUILDPACK_DEBUG: $SFDX_BUILDPACK_DEBUG"
+debug "CI: $CI"
+debug "HEROKU_TEST_RUN_BRANCH: $HEROKU_TEST_RUN_BRANCH"
+debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
+debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
+debug "STACK: $STACK"
+debug "SOURCE_VERSION: $SOURCE_VERSION"
+
+# Set target org alias
+if [ "$CI" == "true" ]; then
+  # CI doesn't include SOURCE_VERSION, so set it to a default value
+  TARGET_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
+  TARGET_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
+else
+  # HEROKU_APP_NAME available via required=true in app.json
+  APP_NAME=${HEROKU_APP_NAME:-$SOURCE_VERSION}
+  TARGET_ORG_ALIAS="ra-$APP_NAME"
+  TARGET_ORG_NAME="Pipeline Review App: $APP_NAME"
+fi
+
+# Ensure w/in 80-chars
+TARGET_ORG_NAME=$(echo ${TARGET_ORG_NAME:0:79})
+
+debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
+debug "TARGET_ORG_NAME: $TARGET_ORG_NAME"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
+
+# Create a bin and vendor directory
+mkdir -p $BUILD_DIR/bin
+
+vendorDir="vendor/sfdx"
+mkdir -p $BUILD_DIR/$vendorDir
 
 # Go to BUILD_DIR
 cd $BUILD_DIR
@@ -71,56 +101,69 @@ debug "show-scratch-org-url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
-### Staging and Prod
-
-if [ "$STAGE" == "DEV" ] || [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
-
-  log "Running on $STAGE ..."
-  
-  auth $BUILD_DIR $SFDX_AUTH_URL s targetorg
-
-  sfdx force:source:convert -d mdapiout
-
-  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
-
-  # Run tests
-  tests $run_apex_tests $apex_test_format targetorg
-
-fi
-
 ### Review app
 
 if [ "$STAGE" == "" ]; then
+
   log "Running as a REVIEW APP ..."
 
+  if [ ! "$CI" == "" ]; then
+    log "Running via CI ..."
+  fi
+
   # Authenticate to Dev Hub
-  auth $BUILD_DIR $DEV_HUB_SFDX_AUTH_URL d huborg
+  auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  sfdx force:org:create -s -f $scratch_org_def -a targetorg
+  invokeCmd "sfdx force:org:create -s -f \"$scratch_org_def\" -a $TARGET_ORG_ALIAS orgName=\"$TARGET_ORG_NAME\""
 
-  # Push source
-  sfdx force:source:push -u targetorg
+  # Store creds for scratch org
+  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
+  debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+  
+  # Store creds in file reflecting the source version (if not running CI)
+  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS
+  debug "stored in file: $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS"
+  
+fi
 
-  ####
+### Setup tests for Heroku CI
 
-  # Run tests
-  tests $run_apex_tests $apex_test_format targetorg
+if [ "$run_apex_tests" == "true" ];
+then
 
-  # Show scratch org URL
-  if [ "$show_scratch_org_url" == "true" ]; then
-    if [ ! "$open_path" == "" ]; then
-      sfdx force:org:open -r -p $open_path
-    fi
-    if [ "$open_path" == "" ]; then
-      sfdx force:org:open -r
-    fi
+  if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
+    log "Creating $BUILD_DIR/bin/test-setup.sh ..."
+    cat <<EOF >$BUILD_DIR/bin/test-setup.sh
+set -x
+# Log testing org
+sfdx force:org:display -u $TARGET_ORG_ALIAS
+set +x
+
+EOF
+    chmod +x $BUILD_DIR/bin/test-setup.sh
+    cat $BUILD_DIR/bin/test-setup.sh
   fi
 
-  # Delete scratch org
-  if [ "$delete_scratch_org" == "true" ]; then
-    sfdx force:org:delete -p
+  if [ ! -f $BUILD_DIR/bin/test.sh ]; then
+    log "Creating $BUILD_DIR/bin/test.sh ..."
+    cat <<EOF >$BUILD_DIR/bin/test.sh
+set -x
+# Run all tests in org
+sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS
+set +x
+
+EOF
+    chmod +x $BUILD_DIR/bin/test.sh
+    cat $BUILD_DIR/bin/test.sh
   fi
+
+else
+  log "Creating $BUILD_DIR/bin/test-setup.sh ..."
+  echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test-setup.sh
+
+  log "Creating $BUILD_DIR/bin/test.sh ..."
+  echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test.sh
 fi
 
 ### Procfile & Release Phase
@@ -129,7 +172,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Procfile ..."
   echo "# Deploy source to production org.
-release: ./release.sh" > $BUILD_DIR/Procfile
+release: ./"$vendorDir"/release.sh \"$TARGET_ORG_ALIAS\"" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
@@ -138,13 +181,13 @@ fi
 log "Copying files for release phase ..."
 
 debug "release.sh to $BUILD_DIR/release.sh"
-cp $BP_DIR/lib/release.sh $BUILD_DIR/
-debug "common.sh to $BUILD_DIR/common.sh"
-cp $BP_DIR/lib/common.sh $BUILD_DIR/
-debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
-cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
-debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
-cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
+cp $BP_DIR/lib/release.sh $BUILD_DIR/"$vendorDir"/
+debug "common.sh to $BUILD_DIR/"$vendorDir"/common.sh"
+cp $BP_DIR/lib/common.sh $BUILD_DIR/"$vendorDir"/
+debug "sfdx.sh to $BUILD_DIR/"$vendorDir"/sfdx.sh"
+cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/"$vendorDir"/
+debug "stdlib.sh to $BUILD_DIR/"$vendorDir"/stdlib.sh"
+cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/"$vendorDir"/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
