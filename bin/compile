@@ -163,11 +163,11 @@ log "Copying files for release phase ..."
 
 debug "release.sh to $BUILD_DIR/release.sh"
 cp $BP_DIR/lib/release.sh $BUILD_DIR/"$vendorDir"/
-debug "common.sh to $BUILD_DIR/common.sh"
+debug "common.sh to $BUILD_DIR/"$vendorDir"/common.sh"
 cp $BP_DIR/lib/common.sh $BUILD_DIR/"$vendorDir"/
-debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
+debug "sfdx.sh to $BUILD_DIR/"$vendorDir"/sfdx.sh"
 cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/"$vendorDir"/
-debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
+debug "stdlib.sh to $BUILD_DIR/"$vendorDir"/stdlib.sh"
 cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/"$vendorDir"/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
