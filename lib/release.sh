@@ -60,7 +60,7 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Get sfdx auth url for scratch org
-  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
+  scratchSfdxAuthUrlFile=$vendorDir$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
