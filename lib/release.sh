@@ -9,11 +9,11 @@ unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
 TARGET_ORG_ALIAS=${1:-}
 
-vendorDir="vendor/sfdx/"
+vendorDir="vendor/sfdx"
 
-source "$vendorDir"common.sh
-source "$vendorDir"sfdx.sh
-source "$vendorDir"stdlib.sh
+source "$vendorDir"/common.sh
+source "$vendorDir"/sfdx.sh
+source "$vendorDir"/stdlib.sh
 
 : ${SFDX_BUILDPACK_DEBUG:="false"}
 
@@ -60,7 +60,7 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Get sfdx auth url for scratch org
-  scratchSfdxAuthUrlFile=$vendorDir$TARGET_ORG_ALIAS
+  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
