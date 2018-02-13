@@ -76,7 +76,7 @@ if [ "$STAGE" == "" ]; then
     if [ ! "$open_path" == "" ]; then
       openCmd = "sfdx force:org:open -r -p $open_path"
     fi
-    invokeCmd openCmd
+    invokeCmd $openCmd
   fi
 
 fi
