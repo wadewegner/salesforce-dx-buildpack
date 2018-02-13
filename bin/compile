@@ -125,11 +125,13 @@ then
   if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
     log "Creating $BUILD_DIR/bin/test-setup.sh ..."
     echo "sfdx force:org:display -u targetorg" > $BUILD_DIR/bin/test-setup.sh
+    chmod +x $BUILD_DIR/bin/test-setup.sh
   fi
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
     echo "sfdx force:apex:test:run -r tap -u targetorg" > $BUILD_DIR/bin/test.sh
+    chmod +x $BUILD_DIR/bin/test.sh
   fi
 
 else
