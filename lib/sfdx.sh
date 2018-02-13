@@ -4,7 +4,9 @@
 auth() {
   
   SFDX_AUTH_URL_FILE="$1/sfdxurl"
-  echo "$2" > "$SFDX_AUTH_URL_FILE"
+  if [ ! "$2" == "" ]; then
+    echo "$2" > "$SFDX_AUTH_URL_FILE"
+  fi
   sfdx force:auth:sfdxurl:store -f "$SFDX_AUTH_URL_FILE" -"$3" -a "$4"
 
 }

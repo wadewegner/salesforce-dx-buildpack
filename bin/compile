@@ -102,7 +102,7 @@ if [ "$STAGE" == "" ]; then
   log "Running as a REVIEW APP ..."
 
   # Authenticate to Dev Hub
-  auth "$BUILD_DIR" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+  auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
   sfdx force:org:create -s -f $scratch_org_def -a $TARGET_ORG_ALIAS

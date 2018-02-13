@@ -54,10 +54,14 @@ if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
 
+  # Get sfdx auth url for scratch org
   scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+
+  # Auth to scratch org
+  auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_ORG_ALIAS"
 
   # Push source
   sfdx force:source:push -u $TARGET_ORG_ALIAS
@@ -88,7 +92,7 @@ if [ ! "$STAGE" == "" ]; then
 
   log "Detected $STAGE. Kicking off deployment ..."
 
-  auth . "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
+  auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
   sfdx force:source:convert -d mdapiout
 
