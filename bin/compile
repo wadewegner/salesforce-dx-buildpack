@@ -134,8 +134,8 @@ then
     cat <<EOF >$BUILD_DIR/bin/test-setup.sh
 # Log testing org
 displayCmd="sfdx force:org:display -u $TARGET_ORG_ALIAS"
-echo $displayCmd
-eval $displayCmd
+echo \$displayCmd
+eval \$displayCmd
 
 EOF
     chmod +x $BUILD_DIR/bin/test-setup.sh
@@ -147,8 +147,8 @@ EOF
     cat <<EOF >$BUILD_DIR/bin/test.sh
 # Run all tests in org
 testCmd="sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS"
-echo $testCmd
-eval $testCmd
+echo \$testCmd
+eval \$testCmd
 
 EOF
     chmod +x $BUILD_DIR/bin/test.sh
