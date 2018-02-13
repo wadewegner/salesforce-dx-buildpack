@@ -115,6 +115,28 @@ if [ "$STAGE" == "" ]; then
   fi
 fi
 
+# Setup tests for Heroku CI
+if [ "$run_apex_tests" == "true" ];
+then
+
+  if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
+    log "Creating $BUILD_DIR/bin/test-setup.sh ..."
+    echo "sfdx force:org:display -u targetorg" > $BUILD_DIR/bin/test-setup.sh
+  fi
+
+  if [ ! -f $BUILD_DIR/bin/test.sh ]; then
+    log "Creating $BUILD_DIR/bin/test.sh ..."
+    echo "sfdx force:apex:test:run -r tap -u targetorg" > $BUILD_DIR/bin/test.sh
+  fi
+
+else
+  log "Creating $BUILD_DIR/bin/test-setup.sh ..."
+  echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test-setup.sh
+
+  log "Creating $BUILD_DIR/bin/test.sh ..."
+  echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test.sh
+fi
+
 ### Procfile & Release Phase
 
 # if no Procfile, create one
