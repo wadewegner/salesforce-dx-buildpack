@@ -53,6 +53,9 @@ debug "data-plans: $data_plans"
 if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
+  if [ ! "$CI" == "" ]; then
+    log "Running via CI ..."
+  fi
 
   # Get sfdx auth url for scratch org
   scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
