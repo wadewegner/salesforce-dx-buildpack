@@ -167,13 +167,13 @@ fi
 log "Copying files for release phase ..."
 
 debug "release.sh to $BUILD_DIR/release.sh"
-cp $BP_DIR/lib/release.sh $BUILD_DIR/
+cp $BP_DIR/lib/release.sh $BUILD_DIR/vendor/sfdx/
 debug "common.sh to $BUILD_DIR/common.sh"
-cp $BP_DIR/lib/common.sh $BUILD_DIR/
+cp $BP_DIR/lib/common.sh $BUILD_DIR/vendor/sfdx/
 debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
-cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/
+cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/vendor/sfdx/
 debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
-cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/
+cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/vendor/sfdx/
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?

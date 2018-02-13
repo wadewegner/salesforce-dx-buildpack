@@ -2,9 +2,9 @@
 
 START_TIME=$SECONDS
 
-source common.sh
-source sfdx.sh
-source stdlib.sh
+source vendor/sfdx/common.sh
+source vendor/sfdx/sfdx.sh
+source vendor/sfdx/stdlib.sh
 
 : ${SFDX_BUILDPACK_DEBUG:="false"}
 
