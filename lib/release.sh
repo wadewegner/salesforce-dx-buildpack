@@ -2,9 +2,11 @@
 
 START_TIME=$SECONDS
 
-source vendor/sfdx/common.sh
-source vendor/sfdx/sfdx.sh
-source vendor/sfdx/stdlib.sh
+vendorDir="vendor/sfdx/"
+
+source "$vendorDir"common.sh
+source "$vendorDir"sfdx.sh
+source "$vendorDir"stdlib.sh
 
 : ${SFDX_BUILDPACK_DEBUG:="false"}
 

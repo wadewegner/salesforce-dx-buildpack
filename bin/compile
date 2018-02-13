@@ -153,12 +153,13 @@ else
 fi
 
 ### Procfile & Release Phase
+vendorDir="vendor/sfdx/"
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Procfile ..."
   echo "# Deploy source to production org.
-release: ./release.sh" > $BUILD_DIR/Procfile
+release: ./"$vendorDir"release.sh" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
@@ -167,13 +168,13 @@ fi
 log "Copying files for release phase ..."
 
 debug "release.sh to $BUILD_DIR/release.sh"
-cp $BP_DIR/lib/release.sh $BUILD_DIR/vendor/sfdx/
+cp $BP_DIR/lib/release.sh $BUILD_DIR/$vendorDir
 debug "common.sh to $BUILD_DIR/common.sh"
-cp $BP_DIR/lib/common.sh $BUILD_DIR/vendor/sfdx/
+cp $BP_DIR/lib/common.sh $BUILD_DIR/$vendorDir
 debug "sfdx.sh to $BUILD_DIR/sfdx.sh"
-cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/vendor/sfdx/
+cp $BP_DIR/lib/sfdx.sh $BUILD_DIR/$vendorDir
 debug "stdlib.sh to $BUILD_DIR/stdlib.sh"
-cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/vendor/sfdx/
+cp $BP_DIR/lib/stdlib.sh $BUILD_DIR/$vendorDir
 
 # TODO: can we be smart and delete or replace .profile during the appropriate
 # stage so that the release phase is faster?
