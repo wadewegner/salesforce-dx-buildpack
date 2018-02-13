@@ -66,6 +66,7 @@ if [ "$CI" == "true" ]; then
 fi
 
 debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
+debug "TARGET_ORG_NAME: $TARGET_ORG_NAME"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
