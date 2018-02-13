@@ -139,6 +139,7 @@ eval $displayCmd
 
 EOF
     chmod +x $BUILD_DIR/bin/test-setup.sh
+    cat $BUILD_DIR/bin/test-setup.sh
   fi
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
@@ -151,6 +152,7 @@ eval $testCmd
 
 EOF
     chmod +x $BUILD_DIR/bin/test.sh
+    cat $BUILD_DIR/bin/test.sh
   fi
 
 else
