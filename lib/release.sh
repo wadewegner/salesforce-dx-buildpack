@@ -97,7 +97,7 @@ fi
 
 # run post-setup script
 if [ -f "bin/post-setup.sh" ]; then
-  sh "bin/post-setup.sh" $TARGET_ORG_ALIAS
+  sh "bin/post-setup.sh" "$TARGET_ORG_ALIAS" "$STAGE"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
