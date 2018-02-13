@@ -57,7 +57,7 @@ debug "SOURCE_VERSION: $SOURCE_VERSION"
 
 # Set target org alias
 TARGET_ORG_ALIAS="ra$SOURCE_VERSION"
-TARGET_ORG_NAME="\"Review App: $SOURCE_VERSION\""
+TARGET_ORG_NAME="\"Pipeline Review App: $SOURCE_VERSION\""
 
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
