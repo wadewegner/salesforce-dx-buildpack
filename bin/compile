@@ -56,13 +56,15 @@ debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
 
 # Set target org alias
-TARGET_ORG_ALIAS="ra$SOURCE_VERSION"
-TARGET_ORG_NAME="\"Pipeline Review App: $SOURCE_VERSION\""
-
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
-  TARGET_ORG_ALIAS="ci$HEROKU_TEST_RUN_COMMIT_VERSION"
-  TARGET_ORG_NAME="\"Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION\""
+  TARGET_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
+  TARGET_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
+else
+  # HEROKU_APP_NAME available via required=true in app.json
+  APP_NAME=${HEROKU_APP_NAME:-$SOURCE_VERSION}
+  TARGET_ORG_ALIAS="ra-$APP_NAME"
+  TARGET_ORG_NAME="Pipeline Review App: $APP_NAME"
 fi
 
 debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
@@ -110,7 +112,7 @@ if [ "$STAGE" == "" ]; then
   auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  sfdx force:org:create -s -f "$scratch_org_def" -a "$TARGET_ORG_ALIAS" orgName="$TARGET_ORG_NAME"
+  invokeCmd "sfdx force:org:create -s -f \"$scratch_org_def\" -a $TARGET_ORG_ALIAS orgName=\"$TARGET_ORG_NAME\""
 
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
@@ -129,14 +131,28 @@ then
 
   if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
     log "Creating $BUILD_DIR/bin/test-setup.sh ..."
-    echo "sfdx force:org:display -u $TARGET_ORG_ALIAS" > $BUILD_DIR/bin/test-setup.sh
+    cat <<EOF >$BUILD_DIR/bin/test-setup.sh
+set -x
+# Log testing org
+sfdx force:org:display -u $TARGET_ORG_ALIAS
+set +x
+
+EOF
     chmod +x $BUILD_DIR/bin/test-setup.sh
+    cat $BUILD_DIR/bin/test-setup.sh
   fi
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
-    echo "sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS" > $BUILD_DIR/bin/test.sh
+    cat <<EOF >$BUILD_DIR/bin/test.sh
+set -x
+# Run all tests in org
+sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS
+set +x
+
+EOF
     chmod +x $BUILD_DIR/bin/test.sh
+    cat $BUILD_DIR/bin/test.sh
   fi
 
 else

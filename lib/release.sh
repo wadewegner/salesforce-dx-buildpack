@@ -47,6 +47,7 @@ debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
 debug "apex-test-format: $apex_test_format"
 debug "delete-scratch-org: $delete_scratch_org"
+debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
@@ -59,7 +60,7 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Get sfdx auth url for scratch org
-  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
+  scratchSfdxAuthUrlFile=$vendorDir$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
@@ -68,15 +69,14 @@ if [ "$STAGE" == "" ]; then
   auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_ORG_ALIAS"
 
   # Push source
-  sfdx force:source:push -u $TARGET_ORG_ALIAS
+  invokeCmd "sfdx force:source:push -u $TARGET_ORG_ALIAS"
 
   # Show scratch org URL
-  if [ "$show_scratch_org_url" == "true" ]; then
+  if [ "$show_scratch_org_url" == "true" ]; then    
     if [ ! "$open_path" == "" ]; then
-      sfdx force:org:open -r -p $open_path
-    fi
-    if [ "$open_path" == "" ]; then
-      sfdx force:org:open -r
+      invokeCmd "sfdx force:org:open -r -p $open_path"
+    else
+      invokeCmd "sfdx force:org:open -r"
     fi
   fi
 
@@ -89,9 +89,9 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
-  sfdx force:source:convert -d mdapiout
+  invokeCmd "sfdx force:source:convert -d mdapiout"
 
-  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS
+  invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
 
 fi
 
