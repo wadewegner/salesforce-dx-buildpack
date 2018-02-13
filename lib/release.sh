@@ -21,6 +21,8 @@ debug "CI: $CI"
 debug "HEROKU_TEST_RUN_BRANCH: $HEROKU_TEST_RUN_BRANCH"
 debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
+debug "STACK: $STACK"
+debug "OURCE_VERSION: $OURCE_VERSION"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -39,6 +41,14 @@ debug "apex-test-format: $apex_test_format"
 debug "delete-scratch-org: $delete_scratch_org"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
+
+if [ "$STAGE" == "" ]; then
+
+  log "Running as a REVIEW APP ..."
+
+
+
+fi
 
 if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
 

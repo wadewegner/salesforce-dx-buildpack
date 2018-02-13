@@ -52,12 +52,17 @@ debug "CI: $CI"
 debug "HEROKU_TEST_RUN_BRANCH: $HEROKU_TEST_RUN_BRANCH"
 debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
+debug "STACK: $STACK"
+debug "OURCE_VERSION: $OURCE_VERSION"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
 
-# Create a bin directory
+# Create a bin and vendor directory
 mkdir -p $BUILD_DIR/bin
+
+vendorDir="vendor/sfdx/"
+mkdir -p $BUILD_DIR/$vendorDir
 
 # Go to BUILD_DIR
 cd $BUILD_DIR
@@ -111,7 +116,7 @@ if [ "$STAGE" == "" ]; then
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
   log "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
-
+  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/scratchsfdxauthurl
 
   # Push source
   sfdx force:source:push -u targetorg
@@ -162,7 +167,7 @@ else
 fi
 
 ### Procfile & Release Phase
-vendorDir="vendor/sfdx/"
+
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
