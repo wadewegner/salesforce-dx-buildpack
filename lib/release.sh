@@ -72,9 +72,9 @@ if [ "$STAGE" == "" ]; then
 
   # Show scratch org URL
   if [ "$show_scratch_org_url" == "true" ]; then
-    openCmd = "sfdx force:org:open -r"
+    openCmd="sfdx force:org:open -r"
     if [ ! "$open_path" == "" ]; then
-      openCmd = "sfdx force:org:open -r -p $open_path"
+      openCmd="sfdx force:org:open -r -p $open_path"
     fi
     invokeCmd $openCmd
   fi
