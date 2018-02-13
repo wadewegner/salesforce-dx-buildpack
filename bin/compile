@@ -67,6 +67,9 @@ else
   TARGET_ORG_NAME="Pipeline Review App: $APP_NAME"
 fi
 
+# Ensure w/in 80-chars
+TARGET_ORG_NAME=$(${TARGET_ORG_NAME:0:79})
+
 debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
 debug "TARGET_ORG_NAME: $TARGET_ORG_NAME"
 
