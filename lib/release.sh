@@ -47,6 +47,7 @@ debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
 debug "apex-test-format: $apex_test_format"
 debug "delete-scratch-org: $delete_scratch_org"
+debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
@@ -71,12 +72,12 @@ if [ "$STAGE" == "" ]; then
   invokeCmd "sfdx force:source:push -u $TARGET_ORG_ALIAS"
 
   # Show scratch org URL
-  if [ "$show_scratch_org_url" == "true" ]; then
-    openCmd="sfdx force:org:open -r"
+  if [ "$show_scratch_org_url" == "true" ]; then    
     if [ ! "$open_path" == "" ]; then
-      openCmd="sfdx force:org:open -r -p $open_path"
+      invokeCmd "sfdx force:org:open -r -p $open_path"
+    else
+      invokeCmd "sfdx force:org:open -r"
     fi
-    invokeCmd $openCmd
   fi
 
 fi
