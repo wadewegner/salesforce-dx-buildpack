@@ -2,6 +2,13 @@
 
 START_TIME=$SECONDS
 
+# set -x
+set -o errexit      # always exit on error
+set -o pipefail     # don't ignore exit codes when piping output
+unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
+
+SOURCE_VERSION_FROM_COMPILE=${1:-}
+
 vendorDir="vendor/sfdx/"
 
 source "$vendorDir"common.sh
@@ -23,6 +30,7 @@ debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
+debug "SOURCE_VERSION_FROM_COMPILE: $SOURCE_VERSION_FROM_COMPILE"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"

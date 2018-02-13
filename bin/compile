@@ -173,7 +173,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Procfile ..."
   echo "# Deploy source to production org.
-release: ./"$vendorDir"release.sh" > $BUILD_DIR/Procfile
+release: ./"$vendorDir"release.sh \"$SOURCE_VERSION\"" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi
