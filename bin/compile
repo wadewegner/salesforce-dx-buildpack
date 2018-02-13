@@ -55,6 +55,13 @@ debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
 
+# Set target org alias
+TARGET_ORG_ALIAS="$SOURCE_VERSION"
+# CI doesn't include SOURCE_VERSION, so set it to a default value
+if [ "$CI" == "true" ]; then
+  TARGET_ORG_ALIAS="CI"
+fi
+
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
 
@@ -117,10 +124,10 @@ if [ "$STAGE" == "" ]; then
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
   
-  # Store creds in file reflecting the source version
-  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$SOURCE_VERSION
-  debug "stored in file: $BUILD_DIR/$vendorDir/$SOURCE_VERSION"
-
+  # Store creds in file reflecting the source version (if not running CI)
+  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS
+  debug "stored in file: $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS"
+  
   # Push source
   sfdx force:source:push -u targetorg
 
@@ -176,7 +183,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Procfile ..."
   echo "# Deploy source to production org.
-release: ./"$vendorDir"/release.sh \"$SOURCE_VERSION\"" > $BUILD_DIR/Procfile
+release: ./"$vendorDir"/release.sh \"$TARGET_ORG_ALIAS\"" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi

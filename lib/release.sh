@@ -7,7 +7,7 @@ set -o errexit      # always exit on error
 set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
-SOURCE_VERSION_FROM_COMPILE=${1:-}
+TARGET_ORG_ALIAS=${1:-}
 
 vendorDir="vendor/sfdx/"
 
@@ -30,7 +30,7 @@ debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
-debug "SOURCE_VERSION_FROM_COMPILE: $SOURCE_VERSION_FROM_COMPILE"
+debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -54,7 +54,7 @@ if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
 
-  scratchSfdxAuthUrlFile=$vendorDir/$SOURCE_VERSION_FROM_COMPILE
+  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
 
