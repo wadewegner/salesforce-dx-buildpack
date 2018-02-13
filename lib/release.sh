@@ -56,19 +56,43 @@ if [ "$STAGE" == "" ]; then
 
   scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
+
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+
+  # Push source
+  sfdx force:source:push -u $TARGET_ORG_ALIAS
+
+  # Show scratch org URL
+  if [ "$show_scratch_org_url" == "true" ]; then
+    if [ ! "$open_path" == "" ]; then
+      sfdx force:org:open -r -p $open_path
+    fi
+    if [ "$open_path" == "" ]; then
+      sfdx force:org:open -r
+    fi
+  fi
+
+  # run post-setup script
+  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
+    sh "$BUILD_DIR/bin/post-setup.sh"
+  fi
+
+  # Delete scratch org
+  if [ "$delete_scratch_org" == "true" ]; then
+    sfdx force:org:delete -p
+  fi
 
 fi
 
-if [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
+if [ ! "$STAGE" == "" ]; then
 
-  log "Detected PROD. Kicking off deployment ..."
+  log "Detected $STAGE. Kicking off deployment ..."
 
-  auth . $SFDX_AUTH_URL s targetorg
+  auth . "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
   sfdx force:source:convert -d mdapiout
 
-  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
+  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS
 
   # run post-setup script
   if [ -f "bin/post-setup.sh" ]; then

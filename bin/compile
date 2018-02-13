@@ -57,10 +57,15 @@ debug "SOURCE_VERSION: $SOURCE_VERSION"
 
 # Set target org alias
 TARGET_ORG_ALIAS="$SOURCE_VERSION"
-# CI doesn't include SOURCE_VERSION, so set it to a default value
+TARGET_ORG_NAME=""
+
 if [ "$CI" == "true" ]; then
-  TARGET_ORG_ALIAS="CI"
+  # CI doesn't include SOURCE_VERSION, so set it to a default value
+  TARGET_ORG_ALIAS="ci"
+  TARGET_ORG_NAME="AppHub Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
 fi
+
+debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -90,81 +95,42 @@ debug "show-scratch-org-url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
-### Staging and Prod
-
-if [ "$STAGE" == "DEV" ] || [ "$STAGE" == "STAGING" ] || [ "$STAGE" == "PROD" ]; then
-
-  log "Running on $STAGE ..."
-  
-  auth $BUILD_DIR $SFDX_AUTH_URL s targetorg
-
-  sfdx force:source:convert -d mdapiout
-
-  sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u targetorg
-
-  # run post-setup script
-  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
-    sh "$BUILD_DIR/bin/post-setup.sh"
-  fi
-
-fi
-
 ### Review app
 
 if [ "$STAGE" == "" ]; then
+
   log "Running as a REVIEW APP ..."
 
   # Authenticate to Dev Hub
-  auth $BUILD_DIR $DEV_HUB_SFDX_AUTH_URL d huborg
+  auth "$BUILD_DIR" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  sfdx force:org:create -s -f $scratch_org_def -a targetorg
+  sfdx force:org:create -s -f $scratch_org_def -a $TARGET_ORG_ALIAS
 
   # Store creds for scratch org
-  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
+  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
   
   # Store creds in file reflecting the source version (if not running CI)
   echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS
   debug "stored in file: $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS"
   
-  # Push source
-  sfdx force:source:push -u targetorg
-
-  # Show scratch org URL
-  if [ "$show_scratch_org_url" == "true" ]; then
-    if [ ! "$open_path" == "" ]; then
-      sfdx force:org:open -r -p $open_path
-    fi
-    if [ "$open_path" == "" ]; then
-      sfdx force:org:open -r
-    fi
-  fi
-
-  # run post-setup script
-  if [ -f "$BUILD_DIR/bin/post-setup.sh" ]; then
-    sh "$BUILD_DIR/bin/post-setup.sh"
-  fi
-
-  # Delete scratch org
-  if [ "$delete_scratch_org" == "true" ]; then
-    sfdx force:org:delete -p
-  fi
 fi
 
-# Setup tests for Heroku CI
+### Setup tests for Heroku CI
+
 if [ "$run_apex_tests" == "true" ];
 then
 
   if [ ! -f $BUILD_DIR/bin/test-setup.sh ]; then
     log "Creating $BUILD_DIR/bin/test-setup.sh ..."
-    echo "sfdx force:org:display -u targetorg" > $BUILD_DIR/bin/test-setup.sh
+    echo "sfdx force:org:display -u $TARGET_ORG_ALIAS" > $BUILD_DIR/bin/test-setup.sh
     chmod +x $BUILD_DIR/bin/test-setup.sh
   fi
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
-    echo "sfdx force:apex:test:run -r tap -u targetorg" > $BUILD_DIR/bin/test.sh
+    echo "sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS" > $BUILD_DIR/bin/test.sh
     chmod +x $BUILD_DIR/bin/test.sh
   fi
 
@@ -177,7 +143,6 @@ else
 fi
 
 ### Procfile & Release Phase
-
 
 # if no Procfile, create one
 if [ ! -f $BUILD_DIR/Procfile ]; then
