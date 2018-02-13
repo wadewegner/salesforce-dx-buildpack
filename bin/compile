@@ -115,8 +115,11 @@ if [ "$STAGE" == "" ]; then
 
   # Store creds for scratch org
   scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u targetorg --json | jq -r .result.sfdxAuthUrl)
-  log "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
-  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/scratchsfdxauthurl
+  debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
+  
+  # Store creds in file reflecting the source version
+  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$SOURCE_VERSION
+  debug "stored in file: $BUILD_DIR/$vendorDir/$SOURCE_VERSION"
 
   # Push source
   sfdx force:source:push -u targetorg
