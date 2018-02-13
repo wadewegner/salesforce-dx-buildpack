@@ -133,7 +133,7 @@ then
     log "Creating $BUILD_DIR/bin/test-setup.sh ..."
     cat <<EOF >$BUILD_DIR/bin/test-setup.sh
 # Log testing org
-displayCmd = "sfdx force:org:display -u $TARGET_ORG_ALIAS"
+displayCmd="sfdx force:org:display -u $TARGET_ORG_ALIAS"
 echo $displayCmd
 eval $displayCmd
 
@@ -145,7 +145,7 @@ EOF
     log "Creating $BUILD_DIR/bin/test.sh ..."
     cat <<EOF >$BUILD_DIR/bin/test.sh
 # Run all tests in org
-testCmd = "sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS"
+testCmd="sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS"
 echo $testCmd
 eval $testCmd
 
