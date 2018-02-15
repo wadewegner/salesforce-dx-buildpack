@@ -24,3 +24,17 @@ tests() {
   fi
 
 }
+
+# <package_name>
+createPackage2Version() {
+
+  packageName="$1"
+  
+}
+
+# <package_name>
+createPackage2Version() {
+
+  packageName="$1"
+  
+}
