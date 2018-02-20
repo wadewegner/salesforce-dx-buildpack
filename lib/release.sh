@@ -93,7 +93,7 @@ if [ ! "$STAGE" == "" ]; then
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
   # create a package is specied a
-  if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ "$STAGE" == "" ];
+  if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
   then
 
     # get package id
