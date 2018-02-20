@@ -61,20 +61,20 @@ debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
 # Set target org alias
 if [ "$CI" == "true" ]; then
   # CI doesn't include SOURCE_VERSION, so set it to a default value
-  TARGET_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
-  TARGET_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
+  TARGET_SCRATCH_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
+  TARGET_SCRATCH_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
 else
   # HEROKU_APP_NAME available via required=true in app.json
   APP_NAME=${HEROKU_APP_NAME:-$SOURCE_VERSION}
-  TARGET_ORG_ALIAS="ra-$APP_NAME"
-  TARGET_ORG_NAME="Pipeline Review App: $APP_NAME"
+  TARGET_SCRATCH_ORG_ALIAS="ra-$APP_NAME"
+  TARGET_SCRATCH_ORG_NAME="Pipeline Review App: $APP_NAME"
 fi
 
 # Ensure w/in 80-chars
-TARGET_ORG_NAME=$(echo ${TARGET_ORG_NAME:0:79})
+TARGET_SCRATCH_ORG_NAME=$(echo ${TARGET_SCRATCH_ORG_NAME:0:79})
 
-debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
-debug "TARGET_ORG_NAME: $TARGET_ORG_NAME"
+debug "TARGET_SCRATCH_ORG_ALIAS: $TARGET_SCRATCH_ORG_ALIAS"
+debug "TARGET_SCRATCH_ORG_NAME: $TARGET_SCRATCH_ORG_NAME"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -118,15 +118,15 @@ if [ "$STAGE" == "" ]; then
   auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
-  invokeCmd "sfdx force:org:create -s -f \"$scratch_org_def\" -a $TARGET_ORG_ALIAS orgName=\"$TARGET_ORG_NAME\""
+  invokeCmd "sfdx force:org:create -s -f \"$scratch_org_def\" -a $TARGET_SCRATCH_ORG_ALIAS orgName=\"$TARGET_SCRATCH_ORG_NAME\""
 
   # Store creds for scratch org
-  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
+  scratchSfdxAuthUrl=$(sfdx force:org:display --verbose -u $TARGET_SCRATCH_ORG_ALIAS --json | jq -r .result.sfdxAuthUrl)
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
   
   # Store creds in file reflecting the source version (if not running CI)
-  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS
-  debug "stored in file: $BUILD_DIR/$vendorDir/$TARGET_ORG_ALIAS"
+  echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_SCRATCH_ORG_ALIAS
+  debug "stored in file: $BUILD_DIR/$vendorDir/$TARGET_SCRATCH_ORG_ALIAS"
   
 fi
 
@@ -140,7 +140,7 @@ then
     cat <<EOF >$BUILD_DIR/bin/test-setup.sh
 set -x
 # Log testing org
-sfdx force:org:display -u $TARGET_ORG_ALIAS
+sfdx force:org:display -u $TARGET_SCRATCH_ORG_ALIAS
 set +x
 
 EOF
@@ -153,7 +153,7 @@ EOF
     cat <<EOF >$BUILD_DIR/bin/test.sh
 set -x
 # Run all tests in org
-sfdx force:apex:test:run -r tap -u $TARGET_ORG_ALIAS
+sfdx force:apex:test:run -r tap -u $TARGET_SCRATCH_ORG_ALIAS
 set +x
 
 EOF
@@ -175,7 +175,7 @@ fi
 if [ ! -f $BUILD_DIR/Procfile ]; then
   log "Creating Procfile ..."
   echo "# Deploy source to production org.
-release: ./"$vendorDir"/release.sh \"$TARGET_ORG_ALIAS\"" > $BUILD_DIR/Procfile
+release: ./"$vendorDir"/release.sh \"$TARGET_SCRATCH_ORG_ALIAS\"" > $BUILD_DIR/Procfile
 
   debug "Generated Procfile that will deploy source in release phase and redirect to open-path in web phase"
 fi

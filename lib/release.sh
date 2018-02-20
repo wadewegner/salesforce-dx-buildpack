@@ -7,7 +7,7 @@ set -o errexit      # always exit on error
 set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
-TARGET_ORG_ALIAS=${1:-}
+TARGET_SCRATCH_ORG_ALIAS=${1:-}
 
 vendorDir="vendor/sfdx"
 
@@ -35,7 +35,7 @@ debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
-debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
+debug "TARGET_SCRATCH_ORG_ALIAS: $TARGET_SCRATCH_ORG_ALIAS"
 debug "SFDX_INSTALL_PACKAGE_VERSION: $SFDX_INSTALL_PACKAGE_VERSION"
 debug "SFDX_CREATE_PACKAGE_VERSION: $SFDX_CREATE_PACKAGE_VERSION"
 debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
@@ -59,6 +59,8 @@ debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
+auth "$vendorDir/sfdxdevhuburl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+
 # If review app or CI
 if [ "$STAGE" == "" ]; then
 
@@ -68,16 +70,16 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Get sfdx auth url for scratch org
-  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
+  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_SCRATCH_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
 
   # Auth to scratch org
-  auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_ORG_ALIAS"
+  auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_SCRATCH_ORG_ALIAS"
 
   # Push source
-  invokeCmd "sfdx force:source:push -u $TARGET_ORG_ALIAS"
+  invokeCmd "sfdx force:source:push -u $TARGET_SCRATCH_ORG_ALIAS"
 
   # Show scratch org URL
   if [ "$show_scratch_org_url" == "true" ]; then    
@@ -95,7 +97,7 @@ if [ ! "$STAGE" == "" ]; then
 
   log "Detected $STAGE. Kicking off deployment ..."
 
-  auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
+  auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_SCRATCH_ORG_ALIAS"
 
   # create a package is specied a
   if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
@@ -121,12 +123,12 @@ if [ ! "$STAGE" == "" ]; then
     then
 
       invokeCmd "sfdx force:source:convert -d mdapiout"
-      invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+      invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_SCRATCH_ORG_ALIAS"
 
     else
 
       log "Calling bin/mdapi-deploy.sh"
-      sh "bin/mdapi-deploy.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+      sh "bin/mdapi-deploy.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 
     fi
 
@@ -137,8 +139,8 @@ fi
 # run post-setup script
 if [ -f "bin/post-setup.sh" ]; then
 
-  debug "Calling bin/post-setup.sh $TARGET_ORG_ALIAS $STAGE"
-  sh "bin/post-setup.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+  debug "Calling bin/post-setup.sh $TARGET_SCRATCH_ORG_ALIAS $STAGE"
+  sh "bin/post-setup.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
