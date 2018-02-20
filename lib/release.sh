@@ -61,7 +61,6 @@ debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
-auth "$vendorDir/sfdxdevhuburl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
 # If review app or CI
 if [ "$STAGE" == "" ]; then
@@ -101,10 +100,13 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_SCRATCH_ORG_ALIAS"
 
-
-
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
+
+    # # Authenticate to Dev Hub (for package creation)
+    # auth "$vendorDir/sfdxdevhuburl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+  
+    invokeCmd "sfdx force:package:install -i \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" --wait 1000 --publishwait 1000"
 
     log "Install package $SFDX_PACKAGE_NAME"
 
