@@ -120,6 +120,8 @@ fi
 
 # run post-setup script
 if [ -f "bin/post-setup.sh" ]; then
+
+  debug "Calling bin/post-setup.sh $TARGET_ORG_ALIAS $STAGE"
   sh "bin/post-setup.sh" "$TARGET_ORG_ALIAS" "$STAGE"
 fi
 
