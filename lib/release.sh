@@ -102,17 +102,28 @@ if [ ! "$STAGE" == "" ]; then
 
   fi
 
-  # run mdapi-deploy script
-  if [ ! -f "bin/mdapi-deploy.sh" ];
+  if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
-    invokeCmd "sfdx force:source:convert -d mdapiout"
-    invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+    log "Install package $SFDX_PACKAGE_NAME"
 
   else
 
-    log "Calling bin/mdapi-deploy.sh"
-    sh "bin/mdapi-deploy.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+    log "Source convert and mdapi deploy"
+
+    # run mdapi-deploy script
+    if [ ! -f "bin/mdapi-deploy.sh" ];
+    then
+
+      invokeCmd "sfdx force:source:convert -d mdapiout"
+      invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+
+    else
+
+      log "Calling bin/mdapi-deploy.sh"
+      sh "bin/mdapi-deploy.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+
+    fi
 
   fi
 
