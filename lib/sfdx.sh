@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 invokeCmd() {
-  debug $1
+  debug "CMD: $1"
   eval $1
 }
 
