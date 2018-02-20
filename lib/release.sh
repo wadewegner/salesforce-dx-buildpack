@@ -19,6 +19,11 @@ source "$vendorDir"/stdlib.sh
 
 header "Running release.sh"
 
+# Setup local paths
+log "Setting up paths ..."
+
+setup_dirs "."
+
 log "Config vars ..."
 debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
 debug "STAGE: $STAGE"
