@@ -106,12 +106,12 @@ if [ ! "$STAGE" == "" ]; then
     # get package id
     CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
     debug "CMD: $CMD"
-    SFDX_PACKAGE_ID=$($CMD)
+    SFDX_PACKAGE_ID=$(eval $CMD)
     debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
 
     # create package version
     CMD="sfdx force:package2:version:create -i $SFDX_PACKAGE_ID --wait 100 --json | jq -r .result.Id"
-    SFDX_PACKAGE_VERSION_ID=$($CMD)
+    SFDX_PACKAGE_VERSION_ID=$(eval $CMD)
     debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
 
   fi
