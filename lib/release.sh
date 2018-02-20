@@ -92,6 +92,16 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
 
+  # create a package is specied a
+  if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ "$STAGE" == "" ];
+  then
+
+    # get package id
+    SFDX_PACKAGE_ID=$(sfdx force:package2:list --json | jq '.result[] | select((.Name) == "PackageName")' | jq -r .Id)
+    debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
+
+  fi
+
   # run mdapi-deploy script
   if [ ! -f "bin/mdapi-deploy.sh" ];
   then
