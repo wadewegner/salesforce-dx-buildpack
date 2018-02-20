@@ -8,6 +8,7 @@ set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
 TARGET_SCRATCH_ORG_ALIAS=${1:-}
+SFDX_PACKAGE_VERSION_ID=${2:-}
 
 vendorDir="vendor/sfdx"
 
@@ -39,6 +40,7 @@ debug "TARGET_SCRATCH_ORG_ALIAS: $TARGET_SCRATCH_ORG_ALIAS"
 debug "SFDX_INSTALL_PACKAGE_VERSION: $SFDX_INSTALL_PACKAGE_VERSION"
 debug "SFDX_CREATE_PACKAGE_VERSION: $SFDX_CREATE_PACKAGE_VERSION"
 debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
+debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -99,22 +101,7 @@ if [ ! "$STAGE" == "" ]; then
 
   auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_SCRATCH_ORG_ALIAS"
 
-  # create a package is specied a
-  if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
-  then
 
-    # get package id
-    CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
-    debug "CMD: $CMD"
-    SFDX_PACKAGE_ID=$(eval $CMD)
-    debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
-
-    # create package version
-    CMD="sfdx force:package2:version:create -i $SFDX_PACKAGE_ID --wait 100 --json | jq -r .result.Id"
-    SFDX_PACKAGE_VERSION_ID=$(eval $CMD)
-    debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
-
-  fi
 
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
