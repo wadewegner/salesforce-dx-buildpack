@@ -103,12 +103,20 @@ if [ ! "$STAGE" == "" ]; then
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
-    # # Authenticate to Dev Hub (for package creation)
-    # auth "$vendorDir/sfdxdevhuburl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
-  
-    log "Installing package version $SFDX_PACKAGE_NAME ..."
+    # run mdapi-deploy script
+    if [ ! -f "bin/package-install.sh" ];
+    then
+    
+      log "Installing package version $SFDX_PACKAGE_NAME ..."
 
-    invokeCmd "sfdx force:package:install -i \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" --wait 1000 --publishwait 1000"
+      invokeCmd "sfdx force:package:install -i \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" --wait 1000 --publishwait 1000"
+
+    else
+
+      log "Calling bin/package-install.sh"
+      sh "bin/package-install.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+
+    fi
 
     if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
       invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""

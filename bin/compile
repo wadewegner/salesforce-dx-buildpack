@@ -134,26 +134,37 @@ fi
 if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
 then
 
-  log "Creating a package version ..."
 
-  # Authenticate to Dev Hub (for package creation)
-  auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+  # run mdapi-deploy script
+  if [ ! -f "$BUILD_DIR/bin/package-create.sh" ];
+  then
 
-  # get package id
-  CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
-  debug "CMD: $CMD"
-  SFDX_PACKAGE_ID=$(eval $CMD)
-  debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
+    log "Creating a package version ..."
 
-  log "Creating new package version (this may take awhile) ..."
+    # Authenticate to Dev Hub (for package creation)
+    auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
-  # create package version
-  CMD="sfdx force:package2:version:create -i $SFDX_PACKAGE_ID --wait 100 --json | jq -r .result.SubscriberPackageVersionId"
-  SFDX_PACKAGE_VERSION_ID=$(eval $CMD)
-  debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
+    # get package id
+    CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
+    debug "CMD: $CMD"
+    SFDX_PACKAGE_ID=$(eval $CMD)
+    debug "SFDX_PACKAGE_ID: $SFDX_PACKAGE_ID"
+
+    log "Creating new package version (this may take awhile) ..."
+
+    # create package version
+    CMD="sfdx force:package2:version:create -i $SFDX_PACKAGE_ID --wait 100 --json | jq -r .result.SubscriberPackageVersionId"
+    SFDX_PACKAGE_VERSION_ID=$(eval $CMD)
+    debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
+
+  else
+
+    log "Calling $BUILD_DIR/bin/package-create.sh"
+    sh "$BUILD_DIR/bin/package-create.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+
+  fi
 
 fi
-
 
 ### Setup tests for Heroku CI
 
