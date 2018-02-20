@@ -114,7 +114,7 @@ if [ "$STAGE" == "" ]; then
     log "Running via CI ..."
   fi
 
-  # Authenticate to Dev Hub
+  # Authenticate to Dev Hub (for scratch org creation)
   auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
@@ -133,6 +133,9 @@ fi
 # create a package is specied and it's not a review app
 if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
 then
+
+  # Authenticate to Dev Hub (for package creation)
+  auth "$BUILD_DIR/$vendorDir/sfdxurl" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # get package id
   CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
