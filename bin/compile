@@ -183,7 +183,7 @@ sfdx force:org:display -u $TARGET_SCRATCH_ORG_ALIAS" > $BUILD_DIR/bin/test-setup
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
-+    cat <<EOF >$BUILD_DIR/bin/test.sh
+    cat <<EOF >$BUILD_DIR/bin/test.sh
 sfdx force:apex:test:run -r tap -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
 exit_status=\$?
 
