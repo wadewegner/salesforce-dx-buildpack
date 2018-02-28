@@ -213,10 +213,7 @@ if [ "$CI" == "" ]; then
   log "Creating $BUILD_DIR/bin/ra-org-delete.sh (reference as 'pr-predestroy' script in app.json) ..."
   cat <<EOF >$BUILD_DIR/bin/ra-org-delete.sh
 # Delete Review app org
-sfdx force:auth:sfdxurl:store -f $BUILD_DIR/$vendorDir/$TARGET_SCRATCH_ORG_ALIAS -a $TARGET_SCRATCH_ORG_ALIAS
 sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
-exit_status=\$?
-exit \$exit_status
 
 EOF
 
