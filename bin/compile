@@ -60,9 +60,12 @@ debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
 
 # Set target org alias
 if [ "$CI" == "true" ]; then
-  # CI doesn't include SOURCE_VERSION, so set it to a default value
+  # CI doesn't include HEROKU_APP_NAME or SOURCE_VERSION (if so, we'd name 
+  # similiarly to RA), so set it to a default value
   TARGET_SCRATCH_ORG_ALIAS="ci-$HEROKU_TEST_RUN_COMMIT_VERSION"
-  TARGET_SCRATCH_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_COMMIT_VERSION"
+  # REVIEWME: ideally we'd reference run-id (eg #86) instead of 
+  # HEROKU_TEST_RUN_ID which is an internal hash that isn't exposed (AFAICT)
+  TARGET_SCRATCH_ORG_NAME="Pipeline CI: $HEROKU_TEST_RUN_BRANCH $HEROKU_TEST_RUN_ID"
 else
   # HEROKU_APP_NAME available via required=true in app.json
   APP_NAME=${HEROKU_APP_NAME:-$SOURCE_VERSION}
@@ -98,7 +101,7 @@ debug "scratch-org-def: $scratch_org_def"
 debug "assign-permset: $assign_permset"
 debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
-debug "apex-test-format: $apex_test_format"
+debug "delete-test-org: $delete_test_org"
 debug "delete-scratch-org: $delete_scratch_org"
 debug "show-scratch-org-url: $show_scratch_org_url"
 debug "open-path: $open_path"
@@ -133,7 +136,6 @@ fi
 # create a package is specied and it's not a review app
 if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
 then
-
 
   # run mdapi-deploy script
   if [ ! -f "$BUILD_DIR/bin/package-create.sh" ];
@@ -181,8 +183,18 @@ sfdx force:org:display -u $TARGET_SCRATCH_ORG_ALIAS" > $BUILD_DIR/bin/test-setup
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
-    echo "# Run all tests in org
-sfdx force:apex:test:run -r tap -u $TARGET_SCRATCH_ORG_ALIAS" > $BUILD_DIR/bin/test.sh
++    cat <<EOF >$BUILD_DIR/bin/test.sh
+sfdx force:apex:test:run -r tap -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
+exit_status=\$?
+
+if [ "$delete_test_org" != "false" ]; then
+  # Delete test org; write output in TAP format
+  echo "# \$(sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error)"
+fi
+
+exit \$exit_status
+
+EOF
 
     chmod +x $BUILD_DIR/bin/test.sh
     cat $BUILD_DIR/bin/test.sh
@@ -194,6 +206,19 @@ else
 
   log "Creating $BUILD_DIR/bin/test.sh ..."
   echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test.sh
+fi
+
++# Review app clean-up
+if [ "$CI" == "" ]; then
+  log "Creating $BUILD_DIR/bin/ra-org-delete.sh (reference as 'pr-predestroy' script in app.json) ..."
+  cat <<EOF >$BUILD_DIR/bin/ra-org-delete.sh
+# Delete Review app org
+sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
+
+EOF
+
+  chmod +x $BUILD_DIR/bin/ra-org-delete.sh
+  cat $BUILD_DIR/bin/ra-org-delete.sh
 fi
 
 ### Procfile & Release Phase

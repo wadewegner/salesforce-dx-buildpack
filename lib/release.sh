@@ -55,7 +55,7 @@ debug "scratch-org-def: $scratch_org_def"
 debug "assign-permset: $assign_permset"
 debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
-debug "apex-test-format: $apex_test_format"
+debug "delete-test-org: $delete_test_org"
 debug "delete-scratch-org: $delete_scratch_org"
 debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
@@ -103,7 +103,7 @@ if [ ! "$STAGE" == "" ]; then
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
-    # run mdapi-deploy script
+    # run package install
     if [ ! -f "bin/package-install.sh" ];
     then
     
