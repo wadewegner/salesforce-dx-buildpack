@@ -208,7 +208,7 @@ else
   echo "echo 'run-apex-tests set to false in .salesforcedx.yml'" > $BUILD_DIR/bin/test.sh
 fi
 
-+# Review app clean-up
+# Review app clean-up
 if [ "$CI" == "" ]; then
   log "Creating $BUILD_DIR/bin/ra-org-delete.sh (reference as 'pr-predestroy' script in app.json) ..."
   cat <<EOF >$BUILD_DIR/bin/ra-org-delete.sh
