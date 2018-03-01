@@ -139,7 +139,7 @@ fi
 if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
 then
 
-  pkgVersionCreateScript=$BUILD_DIR/bin/package-version-create.sh
+  pkgVersionCreateScript=$BUILD_DIR/bin/package-create.sh
   # run package version create
   if [ ! -f "$pkgVersionCreateScript" ];
   then
@@ -207,6 +207,7 @@ EOF
 fi
 
 # Review app clean-up
+# Set bin/ra-org-delete.sh as 'pr-predestroy' script in app.json
 raOrgDeleteScript=$BUILD_DIR/bin/ra-org-delete.sh
 if [ "$CI" == "" ]; then
   log "Creating $raOrgDeleteScript (reference as 'pr-predestroy' script in app.json) ..."
@@ -214,7 +215,6 @@ if [ "$CI" == "" ]; then
   # TODO: figure out why we need to re-auth: place auth files elsewhere, eg CACHE_DIR?
   cat > $raOrgDeleteScript << EOF
 # Delete Review app org
-echo "Deleting Review app org $TARGET_SCRATCH_ORG_ALIAS"
 
 # Auth to Dev Hub
 if [ ! -f $devHubAuthFile ];
@@ -222,6 +222,7 @@ then
   mkdir -p $BUILD_DIR/$vendorDir
   echo "$DEV_HUB_SFDX_AUTH_URL" > $devHubAuthFile
 fi
+sfdx force:auth:sfdxurl:store -f $devHubAuthFile -a huborg -d
 
 # Auth to scratch org
 if [ ! -f $scratchOrgAuthFile ];
@@ -229,9 +230,9 @@ then
   mkdir -p $BUILD_DIR/$vendorDir
   echo "$scratchSfdxAuthUrl" > $scratchOrgAuthFile  
 fi
-
-sfdx force:auth:sfdxurl:store -f $devHubAuthFile -a huborg -d
 sfdx force:auth:sfdxurl:store -f $scratchOrgAuthFile -a $TARGET_SCRATCH_ORG_ALIAS
+
+echo "Deleting Review app org $TARGET_SCRATCH_ORG_ALIAS" ...
 sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
 EOF
 

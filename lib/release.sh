@@ -103,7 +103,7 @@ if [ ! "$STAGE" == "" ]; then
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
-    pkgVersionInstallScript=bin/package-version-install.sh
+    pkgVersionInstallScript=bin/package-install.sh
     # run package install
     if [ ! -f "$pkgVersionInstallScript" ];
     then
