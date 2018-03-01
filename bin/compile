@@ -219,7 +219,7 @@ then
   echo "$scratchSfdxAuthUrl" > $BUILD_DIR/$vendorDir/$TARGET_SCRATCH_ORG_ALIAS  
 fi
 
-sfdx force:auth:sfdxurl:store -f $SFDX_AUTH_URL_FILE -a $TARGET_SCRATCH_ORG_ALIAS
+sfdx force:auth:sfdxurl:store -f $BUILD_DIR/$vendorDir/$TARGET_SCRATCH_ORG_ALIAS -a $TARGET_SCRATCH_ORG_ALIAS
 sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
 EOF
 
