@@ -183,18 +183,16 @@ sfdx force:org:display -u $TARGET_SCRATCH_ORG_ALIAS" > $BUILD_DIR/bin/test-setup
 
   if [ ! -f $BUILD_DIR/bin/test.sh ]; then
     log "Creating $BUILD_DIR/bin/test.sh ..."
-    cat <<EOF >$BUILD_DIR/bin/test.sh
+    echo "# Run tests
 sfdx force:apex:test:run -r tap -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
 exit_status=\$?
 
-if [ "$delete_test_org" != "false" ]; then
+if [ \"$delete_test_org\" != \"false\" ]; then
   # Delete test org; write output in TAP format
-  echo "# \$(sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error)"
+  echo \"# \$(sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error)\"
 fi
 
-exit \$exit_status
-
-EOF
+exit \$exit_status" > $BUILD_DIR/bin/test-setup.sh
 
     chmod +x $BUILD_DIR/bin/test.sh
     cat $BUILD_DIR/bin/test.sh
@@ -211,12 +209,9 @@ fi
 # Review app clean-up
 if [ "$CI" == "" ]; then
   log "Creating $BUILD_DIR/bin/ra-org-delete.sh (reference as 'pr-predestroy' script in app.json) ..."
-  cat <<EOF >$BUILD_DIR/bin/ra-org-delete.sh
-# Delete Review app org
-echo "Deleting Review app org $TARGET_SCRATCH_ORG_ALIAS"
-sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error
-
-EOF
+  echo "# Delete Review app org
+echo \"Deleting Review app org $TARGET_SCRATCH_ORG_ALIAS\"
+sfdx force:org:delete -p -u $TARGET_SCRATCH_ORG_ALIAS --loglevel=error" > $BUILD_DIR/bin/ra-org-delete.sh
 
   chmod +x $BUILD_DIR/bin/ra-org-delete.sh
   cat $BUILD_DIR/bin/ra-org-delete.sh
