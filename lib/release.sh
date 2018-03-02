@@ -103,8 +103,9 @@ if [ ! "$STAGE" == "" ]; then
   if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
+    pkgVersionInstallScript=bin/package-install.sh
     # run package install
-    if [ ! -f "bin/package-install.sh" ];
+    if [ ! -f "$pkgVersionInstallScript" ];
     then
     
       log "Installing package version $SFDX_PACKAGE_NAME ..."
@@ -113,8 +114,8 @@ if [ ! "$STAGE" == "" ]; then
 
     else
 
-      log "Calling bin/package-install.sh"
-      sh "bin/package-install.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+      log "Calling $pkgVersionInstallScript"
+      sh "$pkgVersionInstallScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 
     fi
 
@@ -126,8 +127,9 @@ if [ ! "$STAGE" == "" ]; then
 
     log "Source convert and mdapi deploy"
 
+    mdapiDeployScript=bin/mdapi-deploy.sh
     # run mdapi-deploy script
-    if [ ! -f "bin/mdapi-deploy.sh" ];
+    if [ ! -f "$mdapiDeployScript" ];
     then
 
       invokeCmd "sfdx force:source:convert -d mdapiout"
@@ -135,8 +137,8 @@ if [ ! "$STAGE" == "" ]; then
 
     else
 
-      log "Calling bin/mdapi-deploy.sh"
-      sh "bin/mdapi-deploy.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+      log "Calling $mdapiDeployScript"
+      sh "$mdapiDeployScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 
     fi
 
@@ -144,11 +146,12 @@ if [ ! "$STAGE" == "" ]; then
 
 fi
 
+postSetupScript=bin/post-setup.sh
 # run post-setup script
-if [ -f "bin/post-setup.sh" ]; then
+if [ -f "$postSetupScript" ]; then
 
-  debug "Calling bin/post-setup.sh $TARGET_SCRATCH_ORG_ALIAS $STAGE"
-  sh "bin/post-setup.sh" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+  debug "Calling $postSetupScript $TARGET_SCRATCH_ORG_ALIAS $STAGE"
+  sh "$postSetupScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
