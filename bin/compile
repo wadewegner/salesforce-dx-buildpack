@@ -107,8 +107,10 @@ debug "show-scratch-org-url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
 
-### Review app
+# Set path for Dev Hub auth file
+devHubAuthFile=$BUILD_DIR/$vendorDir/sfdxurl
 
+# Review App or CI
 if [ "$STAGE" == "" ]; then
 
   log "Running as a REVIEW APP ..."
@@ -118,7 +120,7 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Authenticate to Dev Hub (for scratch org creation)
-  devHubAuthFile=$BUILD_DIR/$vendorDir/sfdxurl
+
   auth "$devHubAuthFile" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
   # Create scratch org
@@ -135,7 +137,7 @@ if [ "$STAGE" == "" ]; then
   
 fi
 
-# create a package is specied and it's not a review app
+# Create a package is specied and it's not a review app
 if [ "$SFDX_CREATE_PACKAGE_VERSION" == "true" ] && [ ! "$STAGE" == "" ];
 then
 
@@ -171,7 +173,7 @@ then
 
 fi
 
-### Setup tests for Heroku CI
+# Setup tests for Heroku CI
 
 testSetupScript=$BUILD_DIR/bin/test-setup.sh
 testRunScript=$BUILD_DIR/bin/test.sh
