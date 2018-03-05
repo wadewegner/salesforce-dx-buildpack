@@ -146,11 +146,12 @@ then
   if [ ! -f "$pkgVersionCreateScript" ];
   then
 
-    log "Creating a package version ..."
+    log "Auth to dev hub ..."
 
     # Authenticate to Dev Hub (for package creation)
     auth "$devHubAuthFile" "$DEV_HUB_SFDX_AUTH_URL" d huborg
 
+    log "Auth to dev hub ..."
     # get package id
     CMD="sfdx force:package2:list --json | jq '.result[] | select((.Name) == \"$SFDX_PACKAGE_NAME\")' | jq -r .Id"
     debug "CMD: $CMD"
@@ -208,6 +209,7 @@ EOF
 
 fi
 
+# TODO: This should only get called when it's a review app (currently it's running for everything)
 # Review app clean-up
 # Set bin/ra-org-delete.sh as 'pr-predestroy' script in app.json
 raOrgDeleteScript=$BUILD_DIR/bin/ra-org-delete.sh
