@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 invokeCmd() {
-  echo $1
+  debug "CMD: $1"
   eval $1
 }
 
@@ -23,4 +23,18 @@ tests() {
     invokeCmd "sfdx force:apex:test:run -r $2 -u $3"
   fi
 
+}
+
+# <package_name>
+createPackage2Version() {
+
+  packageName="$1"
+  
+}
+
+# <package_name>
+createPackage2Version() {
+
+  packageName="$1"
+  
 }

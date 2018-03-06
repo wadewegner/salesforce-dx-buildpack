@@ -3,7 +3,7 @@
 setup_dirs() {
   local DIR="$1"
   export PATH="$DIR/vendor/sfdx/cli/bin:$PATH"
-  export PATH="$BUILD_DIR/vendor/sfdx/jq:$PATH"
+  export PATH="$DIR/vendor/sfdx/jq:$PATH"
 }
 
 export_env_dir() {

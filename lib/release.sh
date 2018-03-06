@@ -7,7 +7,8 @@ set -o errexit      # always exit on error
 set -o pipefail     # don't ignore exit codes when piping output
 unset GIT_DIR       # Avoid GIT_DIR leak from previous build steps
 
-TARGET_ORG_ALIAS=${1:-}
+TARGET_SCRATCH_ORG_ALIAS=${1:-}
+SFDX_PACKAGE_VERSION_ID=${2:-}
 
 vendorDir="vendor/sfdx"
 
@@ -18,6 +19,11 @@ source "$vendorDir"/stdlib.sh
 : ${SFDX_BUILDPACK_DEBUG:="false"}
 
 header "Running release.sh"
+
+# Setup local paths
+log "Setting up paths ..."
+
+setup_dirs "."
 
 log "Config vars ..."
 debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
@@ -30,7 +36,11 @@ debug "HEROKU_TEST_RUN_COMMIT_VERSION: $HEROKU_TEST_RUN_COMMIT_VERSION"
 debug "HEROKU_TEST_RUN_ID: $HEROKU_TEST_RUN_ID"
 debug "STACK: $STACK"
 debug "SOURCE_VERSION: $SOURCE_VERSION"
-debug "TARGET_ORG_ALIAS: $TARGET_ORG_ALIAS"
+debug "TARGET_SCRATCH_ORG_ALIAS: $TARGET_SCRATCH_ORG_ALIAS"
+debug "SFDX_INSTALL_PACKAGE_VERSION: $SFDX_INSTALL_PACKAGE_VERSION"
+debug "SFDX_CREATE_PACKAGE_VERSION: $SFDX_CREATE_PACKAGE_VERSION"
+debug "SFDX_PACKAGE_NAME: $SFDX_PACKAGE_NAME"
+debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
 
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
@@ -45,11 +55,12 @@ debug "scratch-org-def: $scratch_org_def"
 debug "assign-permset: $assign_permset"
 debug "permset-name: $permset_name"
 debug "run-apex-tests: $run_apex_tests"
-debug "apex-test-format: $apex_test_format"
+debug "delete-test-org: $delete_test_org"
 debug "delete-scratch-org: $delete_scratch_org"
 debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
+
 
 # If review app or CI
 if [ "$STAGE" == "" ]; then
@@ -60,16 +71,16 @@ if [ "$STAGE" == "" ]; then
   fi
 
   # Get sfdx auth url for scratch org
-  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_ORG_ALIAS
+  scratchSfdxAuthUrlFile=$vendorDir/$TARGET_SCRATCH_ORG_ALIAS
   scratchSfdxAuthUrl=`cat $scratchSfdxAuthUrlFile`
 
   debug "scratchSfdxAuthUrl: $scratchSfdxAuthUrl"
 
   # Auth to scratch org
-  auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_ORG_ALIAS"
+  auth "$scratchSfdxAuthUrlFile" "" s "$TARGET_SCRATCH_ORG_ALIAS"
 
   # Push source
-  invokeCmd "sfdx force:source:push -u $TARGET_ORG_ALIAS"
+  invokeCmd "sfdx force:source:push -u $TARGET_SCRATCH_ORG_ALIAS"
 
   # Show scratch org URL
   if [ "$show_scratch_org_url" == "true" ]; then    
@@ -87,27 +98,60 @@ if [ ! "$STAGE" == "" ]; then
 
   log "Detected $STAGE. Kicking off deployment ..."
 
-  auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_ORG_ALIAS"
+  auth "$vendorDir/sfdxurl" "$SFDX_AUTH_URL" s "$TARGET_SCRATCH_ORG_ALIAS"
 
-  # run mdapi-deploy script
-  if [ ! -f "bin/mdapi-deploy.sh" ];
+  if [ "$SFDX_INSTALL_PACKAGE_VERSION" == "true" ] 
   then
 
-    invokeCmd "sfdx force:source:convert -d mdapiout"
-    invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_ORG_ALIAS"
+    pkgVersionInstallScript=bin/package-install.sh
+    # run package install
+    if [ ! -f "$pkgVersionInstallScript" ];
+    then
+    
+      log "Installing package version $SFDX_PACKAGE_NAME ..."
+
+      invokeCmd "sfdx force:package:install -i \"$SFDX_PACKAGE_VERSION_ID\" -u \"$TARGET_SCRATCH_ORG_ALIAS\" --wait 1000 --publishwait 1000"
+
+    else
+
+      log "Calling $pkgVersionInstallScript"
+      sh "$pkgVersionInstallScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+
+    fi
+
+    if [ "$SFDX_BUILDPACK_DEBUG" == "true" ] ; then
+      invokeCmd "sfdx force:package:installed:list -u \"$TARGET_SCRATCH_ORG_ALIAS\""
+    fi
 
   else
 
-    log "Calling bin/mdapi-deploy.sh"
-    sh "bin/mdapi-deploy.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+    log "Source convert and mdapi deploy"
+
+    mdapiDeployScript=bin/mdapi-deploy.sh
+    # run mdapi-deploy script
+    if [ ! -f "$mdapiDeployScript" ];
+    then
+
+      invokeCmd "sfdx force:source:convert -d mdapiout"
+      invokeCmd "sfdx force:mdapi:deploy -d mdapiout --wait 1000 -u $TARGET_SCRATCH_ORG_ALIAS"
+
+    else
+
+      log "Calling $mdapiDeployScript"
+      sh "$mdapiDeployScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
+
+    fi
 
   fi
 
 fi
 
+postSetupScript=bin/post-setup.sh
 # run post-setup script
-if [ -f "bin/post-setup.sh" ]; then
-  sh "bin/post-setup.sh" "$TARGET_ORG_ALIAS" "$STAGE"
+if [ -f "$postSetupScript" ]; then
+
+  debug "Calling $postSetupScript $TARGET_SCRATCH_ORG_ALIAS $STAGE"
+  sh "$postSetupScript" "$TARGET_SCRATCH_ORG_ALIAS" "$STAGE"
 fi
 
 header "DONE! Completed in $(($SECONDS - $START_TIME))s"
