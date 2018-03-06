@@ -93,9 +93,9 @@ cd $BUILD_DIR
 
 log "Parse .salesforcex.yml values ..."
 
-# Parse .salesforcedx.yml file into env
+# Parse sfdx.yml file into env
 #BUG: not parsing arrays properly
-eval $(parse_yaml .salesforcedx.yml)
+eval $(parse_yaml sfdx.yml)
 
 debug "scratch-org-def: $scratch_org_def"
 debug "assign-permset: $assign_permset"

@@ -47,9 +47,9 @@ debug "WHOAMI: $whoami"
 
 log "Parse .salesforcex.yml values ..."
 
-# Parse .salesforcedx.yml file into env
+# Parse sfdx.yml file into env
 #BUG: not parsing arrays properly
-eval $(parse_yaml .salesforcedx.yml)
+eval $(parse_yaml sfdx.yml)
 
 debug "scratch-org-def: $scratch_org_def"
 debug "assign-permset: $assign_permset"
@@ -60,7 +60,6 @@ debug "delete-scratch-org: $delete_scratch_org"
 debug "show_scratch_org_url: $show_scratch_org_url"
 debug "open-path: $open_path"
 debug "data-plans: $data_plans"
-
 
 # If review app or CI
 if [ "$STAGE" == "" ]; then
