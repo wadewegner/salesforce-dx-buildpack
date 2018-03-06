@@ -44,7 +44,7 @@ SFDX_PLUGINS=$(sfdx plugins --core)
 debug "Plugins: $SFDX_PLUGINS"
 
 # Log config
-debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
+debug "SFDX_DEV_HUB_AUTH_URL: $SFDX_DEV_HUB_AUTH_URL"
 debug "STAGE: $STAGE"
 debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
 debug "SFDX_BUILDPACK_DEBUG: $SFDX_BUILDPACK_DEBUG"
@@ -121,7 +121,7 @@ if [ "$STAGE" == "" ]; then
 
   # Authenticate to Dev Hub (for scratch org creation)
 
-  auth "$devHubAuthFile" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+  auth "$devHubAuthFile" "$SFDX_DEV_HUB_AUTH_URL" d huborg
 
   # Create scratch org
   invokeCmd "sfdx force:org:create -s -f \"$scratch_org_def\" -a $TARGET_SCRATCH_ORG_ALIAS orgName=\"$TARGET_SCRATCH_ORG_NAME\""
@@ -149,7 +149,7 @@ then
     log "Auth to dev hub ..."
 
     # Authenticate to Dev Hub (for package creation)
-    auth "$devHubAuthFile" "$DEV_HUB_SFDX_AUTH_URL" d huborg
+    auth "$devHubAuthFile" "$SFDX_DEV_HUB_AUTH_URL" d huborg
 
     log "Auth to dev hub ..."
     # get package id
@@ -224,7 +224,7 @@ if [ "$CI" == "" ]; then
 if [ ! -f $devHubAuthFile ];
 then
   mkdir -p $BUILD_DIR/$vendorDir
-  echo "$DEV_HUB_SFDX_AUTH_URL" > $devHubAuthFile
+  echo "$SFDX_DEV_HUB_AUTH_URL" > $devHubAuthFile
 fi
 sfdx force:auth:sfdxurl:store -f $devHubAuthFile -a huborg -d
 

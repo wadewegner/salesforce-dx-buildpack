@@ -26,7 +26,7 @@ log "Setting up paths ..."
 setup_dirs "."
 
 log "Config vars ..."
-debug "DEV_HUB_SFDX_AUTH_URL: $DEV_HUB_SFDX_AUTH_URL"
+debug "SFDX_DEV_HUB_AUTH_URL: $SFDX_DEV_HUB_AUTH_URL"
 debug "STAGE: $STAGE"
 debug "SFDX_AUTH_URL: $SFDX_AUTH_URL"
 debug "SFDX_BUILDPACK_DEBUG: $SFDX_BUILDPACK_DEBUG"
