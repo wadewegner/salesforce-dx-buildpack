@@ -91,7 +91,7 @@ mkdir -p $BUILD_DIR/$vendorDir
 # Go to BUILD_DIR
 cd $BUILD_DIR
 
-log "Parse .salesforcex.yml values ..."
+log "Parse sfdx.yml values ..."
 
 # Parse sfdx.yml file into env
 #BUG: not parsing arrays properly

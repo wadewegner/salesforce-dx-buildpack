@@ -45,7 +45,7 @@ debug "SFDX_PACKAGE_VERSION_ID: $SFDX_PACKAGE_VERSION_ID"
 whoami=$(whoami)
 debug "WHOAMI: $whoami"
 
-log "Parse .salesforcex.yml values ..."
+log "Parse sfdx.yml values ..."
 
 # Parse sfdx.yml file into env
 #BUG: not parsing arrays properly
